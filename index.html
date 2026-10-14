@@ -3,133 +3,2513 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام التدقيق النقابي - S.N.T.E</title>
+    <title>بوابة الطلبات الخطية والمراسلات الإدارية المحينة - النقابة الوطنية لعمال التربية SNTE</title>
+    <!-- خطوط تجوال وأميري العربية الرسمية -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <!-- مكتبة Tesseract.js لاستخراج النصوص من الصور OCR -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+
     <style>
-        body { font-family: Tahoma, Arial, sans-serif; background-color: #f0f4f1; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); width: 100%; max-width: 400px; text-align: center; border-top: 5px solid #1b5e20; }
-        .logo img { width: 80px; margin-bottom: 15px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
-        h2 { margin-top: 0; color: #1b5e20; font-size: 22px; }
-        .loader { border: 5px solid #f3f3f3; border-top: 5px solid #1b5e20; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 20px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        .status-icon { font-size: 65px; margin-bottom: 10px; }
-        .success .status-icon { color: #28a745; }
-        .warning .status-icon { color: #f59e0b; }
-        .error .status-icon { color: #dc3545; }
-        
-        .info-box { background: #f8f9fa; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: right; }
-        .info-row { margin-bottom: 12px; border-bottom: 1px dashed #ccc; padding-bottom: 5px; }
-        .info-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        .info-label { font-weight: bold; color: #1b5e20; font-size: 13px; }
-        .info-value { color: #111; font-size: 16px; font-weight: bold; display: block; margin-top: 4px; }
-        
-        #result { display: none; }
+        :root {
+            --primary-green: #006233;
+            --snte-green: #006233;
+            --snte-green-dark: #004d28;
+            --snte-green-light: #eef7f2;
+            --primary-red: #CE1126;
+            --snte-red: #CE1126;
+            --snte-red-dark: #a50d1e;
+            --snte-white: #FFFFFF;
+            --bg-light: #f4f7f6;
+            --text-dark: #222222;
+            --text-muted: #555555;
+            --highlight: #ffeaa7;
+            --gold: #d4af37;
+            --border-color: #dce3e0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+            direction: rtl;
+        }
+
+        /* ================= الترويسة الرسمية للنقابة ================= */
+        header.main-header {
+            background: linear-gradient(135deg, var(--snte-green-dark) 0%, var(--snte-green) 100%);
+            color: var(--snte-white);
+            padding: 1.5rem 1rem;
+            border-bottom: 6px solid var(--snte-red);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            position: relative;
+        }
+
+        .header-container {
+            max-width: 1300px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .header-logo {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            background: white;
+            border-radius: 50%;
+            padding: 5px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+            border: 2px solid var(--snte-red);
+        }
+
+        .header-center {
+            text-align: center;
+            flex: 1;
+        }
+
+        .header-republic {
+            font-size: 1.05rem;
+            font-weight: 700;
+            opacity: 0.95;
+            margin-bottom: 4px;
+        }
+
+        .header-syndicate {
+            font-size: 1.7rem;
+            font-weight: 900;
+            margin: 4px 0;
+            letter-spacing: 0.3px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header-accreditation {
+            font-size: 0.9rem;
+            background: rgba(255,255,255,0.15);
+            display: inline-block;
+            padding: 3px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .header-portal-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #ffeb3b;
+            margin-top: 4px;
+        }
+
+        /* ================= شريط التبويبات التنقلية ================= */
+        .nav-tabs-wrapper {
+            background: var(--snte-white);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-tabs {
+            max-width: 1300px;
+            margin: auto;
+            display: flex;
+            flex-wrap: wrap;
+            list-style: none;
+            padding: 0;
+        }
+
+        .nav-tab-btn {
+            flex: 1;
+            min-width: 210px;
+            padding: 16px 12px;
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 1.02rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            cursor: pointer;
+            border-bottom: 4px solid transparent;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .nav-tab-btn:hover {
+            background: var(--snte-green-light);
+            color: var(--snte-green);
+        }
+
+        .nav-tab-btn.active {
+            color: var(--snte-green);
+            border-bottom-color: var(--snte-red);
+            background: var(--snte-green-light);
+        }
+
+        .badge-update {
+            background: var(--snte-red);
+            color: white;
+            font-size: 0.72rem;
+            padding: 2px 7px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        /* ================= الحاوية الرئيسية والتبويبات ================= */
+        .main-container {
+            max-width: 1320px;
+            margin: 25px auto;
+            padding: 0 15px;
+        }
+
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* لافتة التوجيه */
+        .info-banner {
+            background-color: var(--snte-green-light);
+            color: var(--snte-green-dark);
+            padding: 14px 20px;
+            border-radius: 8px;
+            border-right: 6px solid var(--snte-green);
+            margin-bottom: 20px;
+            font-size: 1.02rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        /* ================= التبويب 1: مولد الطلبات الخطية المحينة ================= */
+        .generator-grid {
+            display: grid;
+            grid-template-columns: 440px 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .form-card {
+            background: var(--snte-white);
+            border-radius: 10px;
+            padding: 22px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-top: 5px solid var(--snte-green);
+        }
+
+        .form-card h3 {
+            margin-top: 0;
+            color: var(--snte-green);
+            font-size: 1.25rem;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 700;
+            font-size: 0.92rem;
+            color: #333;
+        }
+
+        select, input[type="text"], input[type="date"], input[type="tel"], textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.5px solid #cdd5d1;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.96rem;
+            background: #fff;
+            transition: 0.2s;
+        }
+
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--snte-green);
+            box-shadow: 0 0 0 3px rgba(0, 122, 51, 0.15);
+        }
+
+        .law-alert-box {
+            background: #fff8e5;
+            border: 1px solid #f5d67b;
+            border-right: 4px solid #e67e22;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 0.86rem;
+            line-height: 1.5;
+            margin: 12px 0;
+            color: #5c3c00;
+        }
+
+        .law-alert-box strong {
+            color: #c0392b;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .toggle-options {
+            background: #f8faf9;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e2e8e5;
+            margin-top: 12px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-bottom: 8px;
+        }
+
+        .checkbox-label:last-child {
+            margin-bottom: 0;
+        }
+
+        .checkbox-label input {
+            width: 17px;
+            height: 17px;
+            accent-color: var(--snte-green);
+        }
+
+        /* أزرار التحكم بالمعاينة والطباعة */
+        .preview-toolbar {
+            background: var(--snte-white);
+            padding: 12px 18px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+            margin-bottom: 18px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 4px solid var(--snte-red);
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-family: inherit;
+            font-weight: 800;
+            font-size: 0.93rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-print { background: var(--snte-red); color: white; }
+        .btn-print:hover { background: var(--snte-red-dark); transform: translateY(-1px); }
+
+        .btn-green { background: var(--snte-green); color: white; }
+        .btn-green:hover { background: var(--snte-green-dark); transform: translateY(-1px); }
+
+        .btn-whatsapp { background: #25D366; color: white; }
+        .btn-whatsapp:hover { background: #1da851; }
+
+        .btn-blue { background: #2980b9; color: white; }
+        .btn-blue:hover { background: #1f6391; }
+
+        .btn-dark { background: #2c3e50; color: white; }
+        .btn-dark:hover { background: #1a252f; }
+
+        /* ================= ورقة A4 الرسمية للمعاينة والطباعة ================= */
+        .a4-wrapper {
+            overflow-x: auto;
+            padding-bottom: 20px;
+        }
+
+        .a4-sheet {
+            width: 21cm;
+            min-height: 29.6cm;
+            margin: auto;
+            background: white;
+            padding: 1.6cm 1.8cm;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+            position: relative;
+            color: #000;
+            font-family: 'Amiri', 'Tajawal', serif;
+            font-size: 17px;
+            line-height: 1.8;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 1px solid #ddd;
+            z-index: 1;
+        }
+
+        .a4-watermark {
+            position: absolute;
+            top: 52%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 55%;
+            opacity: 0.08;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ترويسة النقابة الاختيارية داخل الورقة */
+        .a4-snte-header {
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--snte-green);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+
+        .a4-snte-header img {
+            width: 65px;
+            height: auto;
+        }
+
+        .a4-republic-top {
+            text-align: center;
+            font-weight: 800;
+            font-size: 15px;
+            margin-bottom: 18px;
+            text-decoration: underline;
+        }
+
+        /* معلومات المرسل والمرسل إليه */
+        .a4-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            gap: 20px;
+        }
+
+        .a4-sender-box {
+            width: 48%;
+            font-weight: 700;
+            font-size: 15.5px;
+            line-height: 1.65;
+        }
+
+        .a4-recipient-box {
+            width: 48%;
+            text-align: left;
+            font-weight: 700;
+            font-size: 15.5px;
+            line-height: 1.65;
+        }
+
+        .a4-recipient-inner {
+            display: inline-block;
+            text-align: center;
+            min-width: 240px;
+        }
+
+        /* الموضوع والمرجع القانوني */
+        .a4-subject-box {
+            margin: 15px 0 20px 0;
+            padding: 10px 14px;
+            background: #f9fbf9;
+            border-right: 4px solid #000;
+        }
+
+        .a4-subject-line {
+            font-weight: 900;
+            font-size: 17px;
+            margin-bottom: 6px;
+        }
+
+        .a4-ref-line {
+            font-weight: 700;
+            font-size: 14.5px;
+            color: #111;
+            line-height: 1.55;
+        }
+
+        /* متن الرسالة */
+        .a4-body-text {
+            text-align: justify;
+            font-size: 16.5px;
+            line-height: 1.9;
+            margin-bottom: 20px;
+            min-height: 220px;
+            padding: 6px;
+            border-radius: 4px;
+        }
+
+        .a4-body-text[contenteditable="true"]:focus,
+        .a4-ref-line[contenteditable="true"]:focus,
+        .a4-attachments-list[contenteditable="true"]:focus {
+            outline: 2px dashed var(--snte-green);
+            background: #fcfffd;
+        }
+
+        /* المرفقات والإمضاء */
+        .a4-bottom-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 25px;
+            padding-top: 15px;
+        }
+
+        .a4-attachments-box {
+            width: 55%;
+            font-size: 14.5px;
+        }
+
+        .a4-attachments-box strong {
+            text-decoration: underline;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .a4-signature-box {
+            width: 40%;
+            text-align: center;
+            font-weight: 800;
+            font-size: 16px;
+        }
+
+        .signature-space {
+            height: 85px;
+        }
+
+        .a4-qr-footer {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px dashed #bbb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #444;
+        }
+
+        .a4-qr-footer img {
+            width: 58px;
+            height: 58px;
+        }
+
+        /* ================= التبويب 2: دليل النماذج الرسمي ================= */
+        .search-box {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid var(--snte-green);
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-family: inherit;
+            margin-bottom: 22px;
+            outline: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            background: var(--text-dark);
+            color: var(--snte-white);
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin: 28px 0 14px 0;
+            font-size: 1.25rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #searchResults {
+            display: none;
+            background: var(--snte-white);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-top: 5px solid #e67e22;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        #searchResults .section-title {
+            margin: 0;
+            border-radius: 0;
+            background: #e67e22;
+        }
+
+        mark {
+            background-color: var(--highlight);
+            padding: 0 4px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        details.guide-accordion {
+            background: var(--snte-white);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border-right: 5px solid var(--snte-green);
+        }
+
+        details.guide-accordion summary {
+            padding: 16px 20px;
+            font-weight: 800;
+            color: var(--text-dark);
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            transition: 0.2s;
+            font-size: 1.08rem;
+        }
+
+        details.guide-accordion summary:hover {
+            background: #f9f9f9;
+            color: var(--snte-green);
+        }
+
+        details.guide-accordion summary::-webkit-details-marker { display: none; }
+
+        details.guide-accordion summary::after {
+            content: '▼';
+            font-size: 0.85em;
+            color: var(--snte-green);
+            transition: transform 0.3s ease;
+        }
+
+        details.guide-accordion[open] summary::after {
+            transform: rotate(180deg);
+        }
+
+        ul.guide-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            border-top: 1px solid #eee;
+        }
+
+        ul.guide-list li {
+            padding: 14px 20px;
+            border-bottom: 1px solid #f1f1f1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            background: #fafafa;
+            flex-wrap: wrap;
+        }
+
+        ul.guide-list li.folder-item {
+            background: var(--snte-green-light);
+            border-bottom: 2px solid #dcebe2;
+        }
+
+        ul.guide-list li.folder-item .item-text {
+            font-weight: 800;
+            color: var(--snte-green-dark);
+        }
+
+        .item-text {
+            flex-grow: 1;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .file-link {
+            background: var(--snte-green);
+            color: var(--snte-white);
+            padding: 7px 14px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: bold;
+            white-space: nowrap;
+            transition: 0.2s;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .file-link.generate-btn {
+            background: var(--snte-red);
+        }
+
+        .file-link.folder-btn {
+            background: #2c3e50;
+        }
+
+        .file-link:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        /* ================= التبويب 3: مرجع القوانين المحينة ================= */
+        .laws-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 20px;
+        }
+
+        .law-card {
+            background: var(--snte-white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+            border-top: 5px solid var(--snte-green);
+            position: relative;
+        }
+
+        .law-card.new-2025 {
+            border-top-color: var(--snte-red);
+        }
+
+        .law-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.78rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: var(--snte-green-light);
+            color: var(--snte-green-dark);
+        }
+
+        .law-card.new-2025 .law-badge {
+            background: #fde8ea;
+            color: var(--snte-red);
+        }
+
+        .law-card h4 {
+            margin: 0 0 10px 0;
+            font-size: 1.12rem;
+            color: #111;
+        }
+
+        .law-card p {
+            margin: 0;
+            font-size: 0.94rem;
+            line-height: 1.65;
+            color: #444;
+        }
+
+        .law-Comparison {
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px dashed #ddd;
+            font-size: 0.85rem;
+        }
+
+        .old-law { color: #c0392b; text-decoration: line-through; display: block; }
+        .new-law { color: var(--snte-green-dark); font-weight: 700; display: block; margin-top: 3px; }
+
+        /* جدول مطابقة وتحيين النصوص القانونية */
+        .law-table-wrapper {
+            background: var(--snte-white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.07);
+            margin-bottom: 25px;
+            border-top: 5px solid var(--gold);
+            overflow-x: auto;
+        }
+
+        .law-table-wrapper h3 {
+            margin-top: 0;
+            color: var(--snte-green-dark);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        table.law-comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.94rem;
+            min-width: 650px;
+        }
+
+        table.law-comparison-table th,
+        table.law-comparison-table td {
+            border: 1px solid #e1e7e4;
+            padding: 12px 14px;
+            text-align: right;
+            line-height: 1.55;
+        }
+
+        table.law-comparison-table th {
+            background: var(--snte-green-dark);
+            color: var(--snte-white);
+            font-weight: 800;
+        }
+
+        table.law-comparison-table tr:nth-child(even) {
+            background: #f9fbfa;
+        }
+
+        /* ================= التبويب 4: أداة OCR وتحيين القوانين ================= */
+        .ocr-card {
+            background: var(--snte-white);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            border-top: 6px solid var(--snte-red);
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .ocr-upload-zone {
+            border: 2px dashed var(--snte-green);
+            background: var(--snte-green-light);
+            padding: 25px;
+            text-align: center;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        /* ================= الإشعارات المنبثقة ================= */
+        .toast-notification {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            background: var(--snte-green-dark);
+            color: white;
+            padding: 14px 22px;
+            border-radius: 8px;
+            font-weight: 700;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            display: none;
+            z-index: 1000;
+            border-right: 5px solid var(--snte-red);
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px 15px;
+            color: #666;
+            margin-top: 40px;
+            border-top: 1px solid #ddd;
+            background: #fff;
+            font-weight: 600;
+        }
+
+        /* ================= إعدادات الطباعة الرسمية الدقيقة A4 ================= */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 12mm;
+            }
+            body {
+                background: white !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            header.main-header,
+            .nav-tabs-wrapper,
+            .info-banner,
+            .form-card,
+            .preview-toolbar,
+            #tab-guide,
+            #tab-laws,
+            #tab-ocr,
+            footer,
+            .toast-notification {
+                display: none !important;
+            }
+            .main-container,
+            #tab-generator,
+            .generator-grid,
+            .a4-wrapper {
+                display: block !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .a4-sheet {
+                box-shadow: none !important;
+                border: none !important;
+                width: 100% !important;
+                min-height: 27cm !important;
+                padding: 0.5cm !important;
+                margin: 0 !important;
+            }
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .generator-grid {
+                grid-template-columns: 1fr;
+            }
+            .header-logo {
+                width: 65px;
+                height: 65px;
+            }
+            .header-syndicate {
+                font-size: 1.3rem;
+            }
+        }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <div class="logo">
-        <img src="https://a.top4top.io/p_3797pbgxl0.png" alt="شعار">
-    </div>
-    <h2>التدقيق الأمني للبطاقات</h2>
-    
-    <div id="loading">
-        <div class="loader"></div>
-        <p style="font-weight: bold; color: #555;">جاري الاتصال بقاعدة البيانات...</p>
-    </div>
-
-    <div id="result">
-    </div>
-</div>
-
-<script>
-    // رابط السيرفر الخاص بك (الإكسل)
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxlN1RYe6SM7ZvQh1Gq7zn3BJ3hQhnTHbOFVcfHc7PplSmkhH7erSX3NvzFA6sRUFr9/exec";
-    
-    // استخراج رقم البطاقة من الرابط
-    const urlParams = new URLSearchParams(window.location.search);
-    let cardId = urlParams.get('id');
-    
-    const loadingDiv = document.getElementById('loading');
-    const resultDiv = document.getElementById('result');
-
-    if (!cardId || cardId.trim() === "") {
-        showError("لم يتم العثور على رقم البطاقة. يرجى مسح رمز الـ QR الخاص بالبطاقة بشكل صحيح.");
-    } else {
-        cardId = cardId.trim(); // إزالة المسافات الزائدة
-        
-        // إضافة متغير زمني (t) لمنع المتصفح من تخزين النتيجة القديمة (Cache)
-        const noCacheUrl = `${WEB_APP_URL}?id=${cardId}&t=${new Date().getTime()}`;
-
-        fetch(noCacheUrl)
-            .then(response => response.json())
-            .then(data => {
-                loadingDiv.style.display = 'none';
-                resultDiv.style.display = 'block';
-
-                if (data.status === "valid") {
-                    // التحقق من حالة الدفع
-                    let isPending = data.paymentStatus && data.paymentStatus.includes("انتظار");
-
-                    if (isPending) {
-                        showWarning(data);
-                    } else {
-                        showSuccess(data);
-                    }
-                } else {
-                    showError("هذه البطاقة غير مسجلة في النظام أو أنها مزورة!");
-                }
-            })
-            .catch(error => {
-                loadingDiv.style.display = 'none';
-                showError("حدث خطأ في الاتصال. يرجى التحقق من اتصالك بالإنترنت والمحاولة مجدداً.");
-                console.error("Error:", error);
-            });
-    }
-
-    function showSuccess(data) {
-        resultDiv.className = "success";
-        resultDiv.innerHTML = `
-            <div class="status-icon">✅</div>
-            <h3 style="color: #28a745; margin: 0 0 5px 0;">بطاقة صالحة</h3>
-            <p style="margin: 0 0 15px 0; color: #666; font-size: 14px;">الاشتراك مسدد رسمياً</p>
-            ${buildInfo(data)}
-        `;
-    }
-
-    function showWarning(data) {
-        resultDiv.className = "warning";
-        resultDiv.innerHTML = `
-            <div class="status-icon">⚠️</div>
-            <h3 style="color: #f59e0b; margin: 0 0 5px 0;">اشتراك قيد الانتظار</h3>
-            <p style="margin: 0 0 15px 0; font-size:13px; color:#666;">البطاقة مسجلة، لكن أمين المال لم يؤكد وصل الدفع بعد.</p>
-            ${buildInfo(data)}
-        `;
-    }
-
-    function showError(msg) {
-        resultDiv.className = "error";
-        resultDiv.style.display = 'block';
-        loadingDiv.style.display = 'none';
-        resultDiv.innerHTML = `
-            <div class="status-icon">❌</div>
-            <h3 style="color: #dc3545; margin: 0 0 10px 0;">تحذير أمني</h3>
-            <p style="font-weight: bold; font-size: 14px; color: #333;">${msg}</p>
-        `;
-    }
-
-    function buildInfo(data) {
-        return `
-            <div class="info-box">
-                <div class="info-row"><span class="info-label">رقم الانخراط الذكي:</span><span class="info-value" style="color:#c62828;">${data.id}</span></div>
-                <div class="info-row"><span class="info-label">الاسم واللقب:</span><span class="info-value">${data.name}</span></div>
-                <div class="info-row"><span class="info-label">الرتبة:</span><span class="info-value">${data.rank}</span></div>
-                <div class="info-row"><span class="info-label">مكان العمل:</span><span class="info-value">${data.workplace}</span></div>
-                <div class="info-row"><span class="info-label">حالة الدفع:</span><span class="info-value">${data.paymentStatus}</span></div>
+    <!-- ================= الترويسة الرسمية للنقابة الوطنية لعمال التربية ================= -->
+    <header class="main-header">
+        <div class="header-container">
+            <img src="https://a.top4top.io/p_3797pbgxl0.png" class="header-logo" alt="شعار SNTE" onerror="this.src='https://placehold.co/90x90/007A33/FFFFFF?text=SNTE'">
+            <div class="header-center">
+                <div class="header-republic">الجمهورية الجزائرية الديمقراطية الشعبية</div>
+                <div class="header-syndicate">النقابة الوطنية لعمال التربية SNTE</div>
+                <div class="header-accreditation">منظمة نقابية معتمدة تحت رقم: 2000/13/7</div>
+                <div class="header-portal-title">بوابة الطلبات الخطية والمراسلات الإدارية المحينة قانونياً (تحديثات 2025 - 2026)</div>
             </div>
-        `;
-    }
-</script>
+            <img src="https://a.top4top.io/p_3797pbgxl0.png" class="header-logo" alt="شعار SNTE" onerror="this.src='https://placehold.co/90x90/007A33/FFFFFF?text=SNTE'">
+        </div>
+    </header>
+
+    <!-- ================= شريط التبويبات الرئيسي ================= -->
+    <div class="nav-tabs-wrapper">
+        <div class="nav-tabs">
+            <button class="nav-tab-btn active" onclick="openTab('tab-generator', this)">
+                ✍️ مولد الطلبات الخطية المحينة <span class="badge-update">فوري</span>
+            </button>
+            <button class="nav-tab-btn" onclick="openTab('tab-guide', this)">
+                📂 دليل النماذج الرسمي (36 نموذجاً)
+            </button>
+            <button class="nav-tab-btn" onclick="openTab('tab-laws', this)">
+                ⚖️ مرجع القوانين المحينة (2025-2026)
+            </button>
+            <button class="nav-tab-btn" onclick="openTab('tab-ocr', this)">
+                📷 استخراج النص (OCR) وتحيين القوانين
+            </button>
+        </div>
+    </div>
+
+    <div class="main-container">
+
+        <!-- ========================================================================= -->
+        <!-- التبويب 1: مولد ومحرر الطلبات الخطية المحينة قانونياً                     -->
+        <!-- ========================================================================= -->
+        <div id="tab-generator" class="tab-pane active">
+            <div class="info-banner">
+                <span>✅ جميع الطلبات الخطية أدناه محينة آلياً وفق القانون الأساسي الجديد لعمال التربية (المرسوم التنفيذي 25-54)، قانون عطلة الأمومة الجديد (25-08)، وقانون العمل النقابي (23-02).</span>
+                <span style="background:var(--gold); color:#111; padding:4px 12px; border-radius:6px; font-size:0.88rem;">⚡ يعمل محلياً 100% وبسرعة فائقة</span>
+            </div>
+
+            <div class="generator-grid">
+                <!-- العمود الأيمن: استمارة إدخال بيانات الموظف والطلب -->
+                <div class="form-card">
+                    <h3>📋 بيانات الموظف ونوع الطلب الخطي</h3>
+
+                    <div class="form-group">
+                        <label>1. اختر قسم الطلب من الدليل:</label>
+                        <select id="reqCategory" onchange="populateTemplatesDropdown()">
+                            <option value="cat_promotion">1- ترقية الموظفين</option>
+                            <option value="cat_career">2- تنظيم المسار المهني</option>
+                            <option value="cat_status">3- الوضعيات القانونية الأساسية وحركات النقل</option>
+                            <option value="cat_highpost">4- التعيين وإنهاء المهام في المناصب العليا</option>
+                            <option value="cat_termination">5- حالات إنهاء الخدمة (التقاعد / الاستقالة)</option>
+                            <option value="cat_misc">6- متفرقات (الخبرة، الجنوب، منصب مكيف، الوثائق)</option>
+                            <option value="cat_leaves">14- العطل والراحة الخاصة بالموظفين</option>
+                            <option value="cat_exams">طلبات المسابقات والطعون (للمترشحين والموظفين)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>2. اختر نموذج الطلب الخطي (36 طلباً متاحاً):</label>
+                        <select id="reqTemplate" onchange="updateRequestPreview()"></select>
+                    </div>
+
+                    <!-- تنبيه التحيين القانوني الخاص بالطلب المختار -->
+                    <div class="law-alert-box" id="lawUpdateNotice">
+                        <strong>⚖️ التحيين القانوني المدمج في هذا الطلب:</strong>
+                        <span id="lawUpdateNoticeText"></span>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>الاسم واللقب:</label>
+                            <input type="text" id="empName" placeholder="مثال: محمد بن عبد الله" value="أحمد بن محمود" oninput="updateRequestPreview()">
+                        </div>
+                        <div class="form-group">
+                            <label>رقم الهاتف / البريد الإلكتروني:</label>
+                            <input type="tel" id="empPhone" placeholder="06 / 05 / 07..." value="0660123456" oninput="updateRequestPreview()">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>الرتبة / المنصب الوظيفي (وفق المرسوم التنفيذي 25-54):</label>
+                        <select id="empRankSelect" onchange="handleRankChange()">
+                            <option value="أستاذ التعليم الابتدائي">أستاذ التعليم الابتدائي</option>
+                            <option value="أستاذ التعليم الابتدائي قسم أول">أستاذ التعليم الابتدائي قسم أول</option>
+                            <option value="أستاذ التعليم الابتدائي قسم ثانٍ">أستاذ التعليم الابتدائي قسم ثانٍ</option>
+                            <option value="أستاذ مميز في التعليم الابتدائي">أستاذ مميز في التعليم الابتدائي</option>
+                            <option value="أستاذ التعليم المتوسط">أستاذ التعليم المتوسط</option>
+                            <option value="أستاذ التعليم المتوسط قسم أول">أستاذ التعليم المتوسط قسم أول</option>
+                            <option value="أستاذ التعليم المتوسط قسم ثانٍ">أستاذ التعليم المتوسط قسم ثانٍ</option>
+                            <option value="أستاذ مميز في التعليم المتوسط">أستاذ مميز في التعليم المتوسط</option>
+                            <option value="أستاذ التعليم الثانوي">أستاذ التعليم الثانوي</option>
+                            <option value="أستاذ التعليم الثانوي قسم أول">أستاذ التعليم الثانوي قسم أول</option>
+                            <option value="أستاذ التعليم الثانوي قسم ثانٍ">أستاذ التعليم الثانوي قسم ثانٍ</option>
+                            <option value="أستاذ مميز في التعليم الثانوي">أستاذ مميز في التعليم الثانوي</option>
+                            <option value="مدير ثانوية / متوسطة / ابتدائية">مدير مؤسسة تربوية (ثانوية / متوسطة / ابتدائية)</option>
+                            <option value="ناظر ثانوية">ناظر ثانوية</option>
+                            <option value="مستشار التربية">مستشار التربية</option>
+                            <option value="مشرف التربية / مشرف رئيسي للتربية">مشرف التربية / مشرف رئيسي للتربية</option>
+                            <option value="مستشار التوجيه والإرشاد المدرسي والمهني">مستشار التوجيه والإرشاد المدرسي والمهني</option>
+                            <option value="مقتصد / مقتصد رئيسي">مقتصد / مقتصد رئيسي</option>
+                            <option value="ملحق رئيسي بالمخبر / مشرف مخبر">ملحق رئيسي بالمخبر / مشرف مخبر</option>
+                            <option value="عون إداري / عامل مهني">عون إداري / عامل مهني</option>
+                            <option value="مترشح لمسابقة التوظيف">مترشح لمسابقة التوظيف (مرتفق)</option>
+                            <option value="custom">-- كتابة رتبة أخرى يدوياً --</option>
+                        </select>
+                        <input type="text" id="empRankCustom" placeholder="أدخل الرتبة أو الصفة يدوياً..." style="display:none; margin-top:8px;" oninput="updateRequestPreview()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>مؤسسة العمل (أو العنوان الشخصي للمترشحين):</label>
+                        <input type="text" id="empWorkplace" placeholder="مثال: ثانوية النعيم النعيمي" value="ثانوية النعيم النعيمي" oninput="updateRequestPreview()">
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>الولاية:</label>
+                            <input type="text" id="empWilaya" placeholder="مثال: الجلفة" value="الجلفة" oninput="updateRequestPreview()">
+                        </div>
+                        <div class="form-group">
+                            <label>البلدية:</label>
+                            <input type="text" id="empCommune" placeholder="مثال: الجلفة" value="الجلفة" oninput="updateRequestPreview()">
+                        </div>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>تاريخ تحرير الطلب:</label>
+                            <input type="date" id="reqDate" onchange="updateRequestPreview()">
+                        </div>
+                        <div class="form-group">
+                            <label>الجهة المرسل إليها:</label>
+                            <select id="reqRecipient" onchange="updateRequestPreview()">
+                                <option value="السيد مدير التربية لولاية">السيد مدير التربية للولاية</option>
+                                <option value="السيد وزير التربية الوطنية">السيد وزير التربية الوطنية</option>
+                                <option value="السيد مدير المؤسسة التربوية">السيد مدير المؤسسة التربوية</option>
+                                <option value="السيد رئيس مصلحة الموظفين بمديرية التربية لولاية">السيد رئيس مصلحة الموظفين بمديرية التربية</option>
+                                <option value="السيد رئيس مفتشية الوظيفة العمومية لولاية">السيد رئيس مفتشية الوظيفة العمومية</option>
+                                <option value="السيد مدير الصندوق الوطني للتقاعد لولاية">السيد مدير الصندوق الوطني للتقاعد (CNR)</option>
+                                <option value="السيد مدير صندوق التأمينات الاجتماعية (CNAS) لولاية">السيد مدير وكالة CNAS للولاية</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>تفاصيل إضافية خاصة بالطلب (الرتبة المستهدفة / المدة / المؤسسة المطلوبة):</label>
+                        <input type="text" id="reqExtraDetail" placeholder="اختياري: مثال (ابتداءً من تاريخ... / إلى مؤسسة...)" oninput="updateRequestPreview()">
+                    </div>
+
+                    <div class="toggle-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="chkHierarchy" checked onchange="updateRequestPreview()">
+                            إضافة عبارة "عن طريق السلم الإداري"
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="chkSnteHeader" onchange="updateRequestPreview()">
+                            إظهار الترويسة الرسمية للنقابة (SNTE) أعلى الورقة
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="chkWatermark" checked onchange="updateRequestPreview()">
+                            إظهار العلامة المائية والبصمة الإلكترونية QR
+                        </label>
+                    </div>
+                </div>
+
+                <!-- العمود الأيسر: المعاينة الحية للورقة A4 وأزرار الاستخراج -->
+                <div>
+                    <div class="preview-toolbar">
+                        <div style="font-weight:800; color:var(--snte-green-dark);">
+                            📄 معاينة الوثيقة الرسمية (يمكنك النقر على أي فقرة في الورقة لتعديلها مباشرة)
+                        </div>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <button class="btn btn-print" onclick="window.print()">🖨️ طباعة الطلب A4 / حفظ PDF</button>
+                            <button class="btn btn-blue" onclick="copyLetterText()">📋 نسخ النص</button>
+                            <button class="btn btn-whatsapp" onclick="shareLetterWhatsapp()">📱 إرسال واتساب</button>
+                            <button class="btn btn-dark" onclick="resetFormAndPreview()">🔄 إعادة ضبط</button>
+                        </div>
+                    </div>
+
+                    <div class="a4-wrapper">
+                        <div class="a4-sheet" id="printableA4">
+                            <!-- العلامة المائية -->
+                            <img src="https://a.top4top.io/p_3797pbgxl0.png" class="a4-watermark" id="a4Watermark" alt="SNTE Watermark">
+
+                            <div>
+                                <!-- ترويسة النقابة الاختيارية -->
+                                <div class="a4-snte-header" id="a4SnteHeader">
+                                    <img src="https://a.top4top.io/p_3797pbgxl0.png" alt="SNTE">
+                                    <div>
+                                        الجمهورية الجزائرية الديمقراطية الشعبية<br>
+                                        النقابة الوطنية لعمال التربية SNTE - منظمة نقابية معتمدة رقم 2000/13/7<br>
+                                        خلية المرافقة القانونية وتسيير الموارد البشرية
+                                    </div>
+                                    <img src="https://a.top4top.io/p_3797pbgxl0.png" alt="SNTE">
+                                </div>
+
+                                <!-- البسملة والجمهورية الكلاسيكية -->
+                                <div class="a4-republic-top" id="a4RepublicClassic">
+                                    الجمهورية الجزائرية الديمقراطية الشعبية
+                                </div>
+
+                                <!-- صف المرسل والمرسل إليه -->
+                                <div class="a4-meta-row">
+                                    <div class="a4-sender-box" contenteditable="true" id="a4SenderBox"></div>
+                                    <div class="a4-recipient-box">
+                                        <div class="a4-recipient-inner" contenteditable="true" id="a4RecipientBox"></div>
+                                    </div>
+                                </div>
+
+                                <!-- الموضوع والمرجع القانوني المحين -->
+                                <div class="a4-subject-box">
+                                    <div class="a4-subject-line" contenteditable="true" id="a4SubjectLine"></div>
+                                    <div class="a4-ref-line" contenteditable="true" id="a4RefLine"></div>
+                                </div>
+
+                                <!-- نص الطلب الخطي القابل للتعديل -->
+                                <div class="a4-body-text" contenteditable="true" id="a4BodyText"></div>
+                            </div>
+
+                            <!-- الجزء السفلي: المرفقات والإمضاء ورمز التوثيق -->
+                            <div>
+                                <div class="a4-bottom-row">
+                                    <div class="a4-attachments-box">
+                                        <strong>المرفقات:</strong>
+                                        <div contenteditable="true" id="a4AttachmentsList" class="a4-attachments-list"></div>
+                                    </div>
+                                    <div class="a4-signature-box">
+                                        <div>إمضاء المعني(ة) بالأمر:</div>
+                                        <div class="signature-space"></div>
+                                        <div id="a4SignerName" style="font-size:14px; font-weight:700;"></div>
+                                    </div>
+                                </div>
+
+                                <div class="a4-qr-footer" id="a4QrFooter">
+                                    <div>
+                                        <strong>موثق قانونياً عبر بوابة النقابة الوطنية لعمال التربية (SNTE)</strong><br>
+                                        تحديث القوانين السارية: المرسوم التنفيذي 25-54 | القانون 25-08 | القانون 23-02<br>
+                                        رقم التوثيق المرجعي: <span id="a4AuthCode"></span>
+                                    </div>
+                                    <img id="a4QrImg" src="" alt="QR">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- التبويب 2: دليل النماذج الرسمي (مع خاصية البحث والاستخراج الفوري)         -->
+        <!-- ========================================================================= -->
+        <div id="tab-guide" class="tab-pane">
+            <div class="info-banner">
+                <span>💡 يمكنك تحميل النموذج الأصلي بصيغة PDF من Google Drive، أو الضغط على زر <strong>(✍️ تحرير واستخراج محين)</strong> لتوليد الطلب فوراً بالقوانين الجديدة!</span>
+            </div>
+
+            <input type="text" id="searchInput" class="search-box" placeholder="🔍 ابحث في الدليل عن أي طلب خطي (مثال: عطلة أمومة، ترقية، نقل، تقاعد، طعن، منصب مكيف)...">
+
+            <div id="searchResults">
+                <div class="section-title">🔍 النتائج المستخرجة من الدليل</div>
+                <ul id="resultsList" class="guide-list"></ul>
+            </div>
+
+            <div id="mainContent">
+                <div class="section-title">1️⃣ نماذج الطلبات الكتابية للمستخدمين (الموظفين)</div>
+
+                <!-- 1- ترقية الموظفين -->
+                <details class="guide-accordion" open>
+                    <summary>1- ترقية الموظفين (محينة وفق المرسوم التنفيذي 25-54)</summary>
+                    <ul class="guide-list">
+                        <li class="folder-item">
+                            <span class="item-text">📁 تحميل ملفات قسم (ترقية الموظفين) بالكامل</span>
+                            <div class="item-actions">
+                                <a href="https://drive.google.com/drive/folders/18okF88_PVnccFEEokF7aulY9YCF_K-wf" class="file-link folder-btn" target="_blank">📥 فتح المجلد</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب التسجيل ضمن قائمة التأهيل للالتحاق برتبة أعلى</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_promotion', 'prom_1')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/195Sh6xOb9NYwSEgLkyB_LIpY3n2hsVmu/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب الترقية إلى الرتبة الأعلى مباشرة (بعد الحصول على شهادة أو تكوين)</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_promotion', 'prom_2')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/195YvEYOwWRHY33nrHXvvybArlaETaONk/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب الترقية في إطار المادة 25</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_promotion', 'prom_3')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/197gsGoUztY4gPkkKRCZi8Eq3GpZ0F9aV/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب ترقية خاصة بأبناء/أرامل الشهداء أو المجاهدين</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_promotion', 'prom_4')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/19A0QCT0ha-fAEyJ5LBbfwmtxWdaDlVDz/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب ترقية بزيادة صنفين (شهداء/مجاهدين)</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_promotion', 'prom_5')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/19A0QCT0ha-fAEyJ5LBbfwmtxWdaDlVDz/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب الإستفادة من ترقية استثنائية</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_promotion', 'prom_6')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/19Q4gqE55PVCnJGO4rDuo4sm-SgS__a9P/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب الترقية في الرتبة للموظفين المتواجدين في حالة إنتداب</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_promotion', 'prom_7')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/19QFjJHFwVFA1Yrsf8rpUZnCjQfzj6t_-/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                    </ul>
+                </details>
+
+                <!-- 2- تنظيم المسار المهني -->
+                <details class="guide-accordion">
+                    <summary>2- تنظيم المسار المهني</summary>
+                    <ul class="guide-list">
+                        <li class="folder-item">
+                            <span class="item-text">📁 تحميل ملفات قسم (تنظيم المسار المهني) بالكامل</span>
+                            <div class="item-actions">
+                                <a href="https://drive.google.com/drive/folders/19T077wHhDZ8Z8_WG0HFgaUfyo82C-o9c" class="file-link folder-btn" target="_blank">📥 فتح المجلد</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب تسوية وضعية تجاه فترة التربص (الترسيم / التثبيت)</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_career', 'car_1')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/19WLGBVwYZlmhcjZz5r2dLYUELIKuPDkB/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب إعادة إدماج بعد العزل بسبب إهمال المنصب</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_career', 'car_2')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/19XY8PNHapqzhCdVry0Me_oR7c4gGAO8V/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب الترخيص بالمشاركة في مسابقة توظيف خارجية</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_career', 'car_3')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/19bU0h6zpolRPbPHxb6gwSKwEP-EF0sRi/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب مواصلة النشاط بعد السن القانونية للتقاعد</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_career', 'car_4')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/19hifjGxlo1zwOUSZBhaVuZTg1ya3UGc9/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب الاستفادة من عطلة التحرك المهني (مستحدثة بالمرسوم التنفيذي 25-54)</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_career', 'car_5')">✍️ تحرير واستخراج محين</button>
+                            </div>
+                        </li>
+                    </ul>
+                </details>
+
+                <!-- 3- الوضعيات القانونية الأساسية وحركات النقل -->
+                <details class="guide-accordion">
+                    <summary>3- الوضعيات القانونية الأساسية وحركات النقل</summary>
+                    <ul class="guide-list">
+                        <li class="folder-item">
+                            <span class="item-text">📁 تحميل ملفات قسم (الوضعيات القانونية وحركات النقل) بالكامل</span>
+                            <div class="item-actions">
+                                <a href="https://drive.google.com/drive/folders/19lTif_XnaUh5__xnIhsy6jWY4eVKlTp5" class="file-link folder-btn" target="_blank">📥 فتح المجلد</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- نموذج طلب نقل</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_status', 'stat_1')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/1AEwbfm9g-Zzf1HnO2lzZ9e39-XdT5dxg/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب نقل عون متربص</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_status', 'stat_2')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/1AGOMw92_gH7As0K5vxSUbyjRNYfNGBux/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب التسجيل في جدول حركة الموظفين</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_status', 'stat_3')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/1AJi91ySvhxu6E7G9al_6pOqu3I56S83W/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب إعادة إدماج بعد فترة الخدمة الوطنية</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_status', 'stat_4')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/1AU52Ahqi2G5uzoHerC6KZJt4F7YOEhk-/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب إنتداب لممارسة عهدة إنتخابية أو نقابية (وفق القانون 23-02)</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_status', 'stat_5')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/1AhgwHV4SWSu2N2EgbtUSFBXvWKF-RdSa/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب الإحالة على عطلة مرضية طويلة المدى أو العجز</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_status', 'stat_6')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/1ODRMbgs8d-7EoLM0HEHNI_Y3KLBDZdA0/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب الإحالة على الاستيداع / عطلة غير مدفوعة الأجر لإنشاء مؤسسة (القانون 22-22)</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_status', 'stat_7')">✍️ تحرير واستخراج محين</button>
+                            </div>
+                        </li>
+                    </ul>
+                </details>
+
+                <!-- 4- التعيين وإنهاء المهام في المناصب العليا -->
+                <details class="guide-accordion">
+                    <summary>4- التعيين وإنهاء المهام في المناصب العليا</summary>
+                    <ul class="guide-list">
+                        <li class="folder-item">
+                            <span class="item-text">📁 تحميل ملفات قسم (التعيين في المناصب العليا) بالكامل</span>
+                            <div class="item-actions">
+                                <a href="https://drive.google.com/drive/folders/1CM4Ogt4G_eIn9ZZP9AVCoZFFK6vvSagE" class="file-link folder-btn" target="_blank">📥 فتح المجلد</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- الموافقة على الإقتراح قصد التعيين في منصب عالي</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_highpost', 'hp_1')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/1CTSGF4-AqQ71RJqbUJ_oC_tHqubBOg5i/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- الموافقة على الإقتراح قصد التعيين بعد الانتداب</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_highpost', 'hp_2')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/1CVl_AK4sECAM5CMSJ2ikwTgN_Ag02aLh/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- الإعفاء من مهام منصب عالي</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_highpost', 'hp_3')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/1CZ2gtwCRdKTi49_pcOXSp-YrJ3Pe4DC8/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                    </ul>
+                </details>
+
+                <!-- 5- حالات إنهاء الخدمة -->
+                <details class="guide-accordion">
+                    <summary>5- حالات إنهاء الخدمة (الاستقالة / التقاعد)</summary>
+                    <ul class="guide-list">
+                        <li class="folder-item">
+                            <span class="item-text">📁 تحميل ملفات قسم (حالات إنهاء الخدمة) بالكامل</span>
+                            <div class="item-actions">
+                                <a href="https://drive.google.com/drive/folders/1CcmjsHWsW3PipjpkkC7XMIGsKRWFGbhf" class="file-link folder-btn" target="_blank">📥 فتح المجلد</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب الموافقة على الإستقالة</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_termination', 'term_1')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/1CjZG4Y9WjrmOF4IaY7FeKIqHn_926ir6/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب الإحالة على التقاعد (محين وفق المادة 12 من المرسوم التنفيذي 25-54)</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_termination', 'term_2')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/1Cr6Fu0sOS0qy4A9COe1MhDYQHT1roAab/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب الإحالة على التقاعد أثناء التواجد في حالة إنتداب</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_termination', 'term_3')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/1Cy7YWQ3jvvbgPHGkIgLtJ43rpGUjMwT3/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                    </ul>
+                </details>
+
+                <!-- 6- متفرقات -->
+                <details class="guide-accordion">
+                    <summary>6- متفرقات (الأقدمية، الجنوب، منصب مكيف، وثائق إدارية)</summary>
+                    <ul class="guide-list">
+                        <li class="folder-item">
+                            <span class="item-text">📁 تحميل ملفات قسم (متفرقات) بالكامل</span>
+                            <div class="item-actions">
+                                <a href="https://drive.google.com/drive/folders/1D13xqky-UAVhnfqxl4vKlZVinAw8peVA" class="file-link folder-btn" target="_blank">📥 فتح المجلد</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- الإستفادة من تعويض الخبرة المهنية (احتساب الأقدمية المكتسبة)</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_misc', 'misc_1')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/1D8_8eIGKJFR7T_obWVb_mNWrajx-GJBe/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- الإستفادة من الزيادة في الأقدمية الخاصة بالجنوب</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_misc', 'misc_2')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/1DBLOdpJv_Hhq0gq2V3g0a1ttjskpMeai/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- الإستفادة من منصب عمل مكيف (وفق المادة 21 من المرسوم التنفيذي 25-54)</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_misc', 'misc_3')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/1DDmpXZkQEFLZKEgv6Fq4KEMAkP_biGYY/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- نموذج طلب شهادة عمل</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_misc', 'misc_4')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/1DHSPb4MLoL3WIHEJLkPMekmz7qoNhLar/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- نموذج طلب كشف الراتب</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_misc', 'misc_5')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/1DSnT5Be2ZWAz9vOuMUGmrZRV0PHNLvxQ/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                    </ul>
+                </details>
+
+                <!-- 14- العطل والراحة -->
+                <details class="guide-accordion">
+                    <summary>14- العطل والراحة الخاصة بالموظفين (محينة بقانون الأمومة الجديد 25-08)</summary>
+                    <ul class="guide-list">
+                        <li class="folder-item">
+                            <span class="item-text">📁 تحميل ملفات قسم (العطل والراحة) بالكامل</span>
+                            <div class="item-actions">
+                                <a href="https://drive.google.com/drive/folders/1G_45cBoOLVMRivmIe0ZXvEjI-tLrBuhX" class="file-link folder-btn" target="_blank">📥 فتح المجلد</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب الإستفادة من عطلة سنوية</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_leaves', 'leave_1')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/1H4dbKf9WWWjIEt2VcVgFT4fstjEwNkgi/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب الإستفادة من رصيد متبقي للعطلة السنوية</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_leaves', 'leave_2')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/1Go4FJjA9WSN59XGg93LUPls3r2tgiuqa/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب الإستفادة من عطلة أمومة (150 يوماً متتالياً وفق القانون 25-08 الجديد)</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_leaves', 'leave_3')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/1M33aIzBYSwRKWhJ4IBO-FQzy7O1haq4T/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب تمديد عطلة أمومة بـ 50 يوماً أو 165 يوماً (لأسباب صحية تخص المولود - القانون 25-08)</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_leaves', 'leave_4')">✍️ تحرير واستخراج محين</button>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب الإستفادة من عطلة مرضية</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_leaves', 'leave_5')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/1HguDrCJDODXL5g0OLcOdta33XZSGo95D/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                    </ul>
+                </details>
+
+                <div class="section-title" style="background: var(--snte-red);">2️⃣ نماذج الطلبات الكتابية للمرتفقين (المسابقات والطعون)</div>
+
+                <!-- 1- المسابقات على أساس الشهادات -->
+                <details class="guide-accordion">
+                    <summary>1- تنظيم المسابقات على أساس الشهادات</summary>
+                    <ul class="guide-list">
+                        <li class="folder-item">
+                            <span class="item-text">📁 تحميل ملفات قسم (المسابقات على أساس الشهادات) بالكامل</span>
+                            <div class="item-actions">
+                                <a href="https://drive.google.com/drive/folders/16iEtbuepXQKw80H4F7EdscQUoWFX5Cdk" class="file-link folder-btn" target="_blank">📥 فتح المجلد</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب المشاركة في المسابقة على أساس الشهادات</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_exams', 'exam_1')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/16q7f0gJrmN8p9xJIxykWBjjEAl91DkqC/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طعن في قرار رفض ملف المشاركة (مسابقة على أساس الشهادات)</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_exams', 'exam_2')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/16vV373vSzid5HF1q0dGOi79n1E2lDcaQ/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طعن في النتائج النهائية للمسابقة (مقدم للإدارة)</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_exams', 'exam_3')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/16wZEbUbgCwdg18ibIag1-HLOoYeT8eRc/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طعن في النتائج النهائية للمسابقة (مقدم للوظيفة العمومية)</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_exams', 'exam_4')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/16x4JY4Qsz0FbUImfSuIRnAChTzimFYyQ/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                    </ul>
+                </details>
+
+                <!-- 2- المسابقات على أساس الاختبارات -->
+                <details class="guide-accordion">
+                    <summary>2- تنظيم المسابقات على أساس الاختبارات</summary>
+                    <ul class="guide-list">
+                        <li class="folder-item">
+                            <span class="item-text">📁 تحميل ملفات قسم (المسابقات على أساس الاختبارات) بالكامل</span>
+                            <div class="item-actions">
+                                <a href="https://drive.google.com/drive/folders/17JdyiPSmSTxHtfpZlzqhP8a64iA4agdG" class="file-link folder-btn" target="_blank">📥 فتح المجلد</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب مشاركة في مسابقة توظيف على أساس الاختبارات</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_exams', 'exam_5')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/17L5cHamMTf56xoVkkMQyEFW4xaS6zVVh/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طلب مشاركة في مسابقة توظيف عن طريق الفحص المهني</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_exams', 'exam_6')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/17MbZvAmQjOUiKhW4qBYvEOE0tu0LII3O/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طعن في قرار رفض ملف المشاركة على أساس الاختبارات</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_exams', 'exam_7')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/17OAViQDwfpm__aZGB3mi9xQ_xbGsPkIU/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                    </ul>
+                </details>
+
+                <!-- 3- المسابقات على أساس الانتقاء -->
+                <details class="guide-accordion">
+                    <summary>3- تنظيم المسابقات على أساس الانتقاء</summary>
+                    <ul class="guide-list">
+                        <li class="folder-item">
+                            <span class="item-text">📁 تحميل ملفات قسم (التوظيف على أساس الانتقاء) بالكامل</span>
+                            <div class="item-actions">
+                                <a href="https://drive.google.com/drive/folders/17n5-O5wN60bi9bcCfkfAqaXaUuWh7K7A" class="file-link folder-btn" target="_blank">📥 فتح المجلد</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- المشاركة في التوظيف على أساس الانتقاء (دراسة الملفات)</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_exams', 'exam_8')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/17uO3uTUv2OckGyVH2J0i1X2DS6gJecre/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                        <li class="file-item">
+                            <span class="item-text">- طعن في قرار رفض ملف المشاركة على أساس الانتقاء</span>
+                            <div class="item-actions">
+                                <button class="file-link generate-btn" onclick="jumpToGenerator('cat_exams', 'exam_9')">✍️ تحرير واستخراج محين</button>
+                                <a href="https://drive.google.com/file/d/17vi8RvHxS0EJaHvXXA2AEfPV9BmB_Qli/view" class="file-link" target="_blank">📥 نموذج PDF</a>
+                            </div>
+                        </li>
+                    </ul>
+                </details>
+            </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- التبويب 3: مرجع القوانين المحينة المعتمدة في البوابة (2023 - 2026)        -->
+        <!-- ========================================================================= -->
+        <div id="tab-laws" class="tab-pane">
+            <div class="info-banner">
+                <span>⚖️ قامت اللجنة القانونية للنقابة الوطنية لعمال التربية (SNTE) بتحيين جميع المراجع القانونية الواردة في المراسلات الإدارية لتتطابق مع أحدث النصوص الصادرة في الجريدة الرسمية للجمهورية الجزائرية.</span>
+            </div>
+
+            <!-- جدول مطابقة وتحيين النصوص القانونية -->
+            <div class="law-table-wrapper">
+                <h3>📊 جدول مطابقة وتحيين النصوص القانونية (القديمة ⬅ الجديدة 2025-2026)</h3>
+                <table class="law-comparison-table">
+                    <thead>
+                        <tr>
+                            <th>مجال المراسلة الإدارية</th>
+                            <th>النص القانوني القديم (الملغى أو المعدل)</th>
+                            <th>النص القانوني الجديد المحين (المعتمد في البوابة)</th>
+                            <th>أبرز المستجدات المدمجة في الطلبات الخطية</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>القانون الأساسي لعمال التربية</strong><br>(الترقية، الإدماج، التصنيف، التقاعد، منصب مكيف)</td>
+                            <td><span style="color:#c0392b; text-decoration:line-through;">المرسوم التنفيذي 08-315 المعدل والمتمم بالمرسوم التنفيذي 12-240</span></td>
+                            <td><strong style="color:var(--snte-green-dark);">المرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025</strong> (الجريدة الرسمية رقم 06)</td>
+                            <td>استحداث رتبة <strong>"أستاذ مميز"</strong>، تكييف المنصب لأسباب صحية (المادة 21)، عطلة التحرك المهني (المواد 32-36)، والتقاعد الاختياري (المادة 12).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>عطلة الأمومة والتأمينات الاجتماعية</strong></td>
+                            <td><span style="color:#c0392b; text-decoration:line-through;">القانون 83-11 بصيغته القديمة (عطلة أمومة 98 يوماً / 14 أسبوعاً)</span></td>
+                            <td><strong style="color:var(--snte-green-dark);">القانون رقم 25-08 المؤرخ في 19 يوليو 2025</strong> المعدل والمتمم للقانون 83-11</td>
+                            <td>تمديد عطلة الأمومة إلى <strong>150 يوماً متتالياً</strong> بتعويض 100%، مع حق التمديد بـ <strong>50 يوماً</strong> ثم <strong>165 يوماً</strong> إضافياً لحالة المولود الصحية.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ممارسة الحق النقابي والانتداب النقابي</strong></td>
+                            <td><span style="color:#c0392b; text-decoration:line-through;">القانون رقم 90-14 المؤرخ في 02 جوان 1990</span></td>
+                            <td><strong style="color:var(--snte-green-dark);">القانون رقم 23-02 المؤرخ في 25 أفريل 2023</strong> المتعلق بممارسة الحق النقابي</td>
+                            <td>تنظيم جديد للانتداب النقابي، التفرغ النقابي، والحماية القانونية للمندوبين النقابيين.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>القانون الأساسي العام للوظيفة العمومية</strong></td>
+                            <td><span>الأمر رقم 06-03 المؤرخ في 15 يوليو 2006 (دون تعديل 2022)</span></td>
+                            <td><strong style="color:var(--snte-green-dark);">الأمر 06-03 المتمم بالقانون رقم 22-22 المؤرخ في 18 ديسمبر 2022</strong></td>
+                            <td>إدراج حق الموظف في الاستفادة من عطلة غير مدفوعة الأجر لإنشاء مؤسسة.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>الوضعيات القانونية والاستيداع</strong></td>
+                            <td><span style="color:#c0392b; text-decoration:line-through;">النصوص التنظيمية السابقة لسنة 2020</span></td>
+                            <td><strong style="color:var(--snte-green-dark);">المرسوم التنفيذي رقم 20-373 المؤرخ في 12 ديسمبر 2020</strong></td>
+                            <td>تحديد دقيق لشروط وضعية القيام بالخدمة، الانتداب، والاستيداع لأغراض شخصية أو عائلية.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="laws-grid">
+                <div class="law-card new-2025">
+                    <span class="law-badge">تحيين جوهري - جانفي 2025</span>
+                    <h4>المرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025</h4>
+                    <p>يتضمن القانون الأساسي الخاص بالموظفين المنتمين للأسلاك الخاصة بالتربية الوطنية (الجريدة الرسمية رقم 06). أدرج رتبة "أستاذ مميز"، وحق الأقدمية المكتسبة، وتكييف المنصب (المادة 21)، وعطلة التحرك المهني (المواد 32-36)، وشروط التقاعد الجديدة (المادة 12).</p>
+                    <div class="law-Comparison">
+                        <span class="old-law">❌ النص القديم الملغى: المرسوم التنفيذي 08-315 المعدل بالمرسوم 12-240</span>
+                        <span class="new-law">✅ النص المحين المعتمد: المرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025</span>
+                    </div>
+                </div>
+
+                <div class="law-card new-2025">
+                    <span class="law-badge">تحيين جديد - يوليو 2025</span>
+                    <h4>القانون رقم 25-08 المؤرخ في 19 يوليو 2025 (عطلة الأمومة)</h4>
+                    <p>يعدل ويتمم القانون رقم 83-11 المتعلق بالتأمينات الاجتماعية. ينص على تمديد عطلة الأمومة لفائدة الموظفة المؤمن لها اجتماعياً إلى <strong>150 يوماً متتالياً</strong> بتعويض يومي كامل (100%)، مع إمكانية التمديد بـ 50 يوماً إضافياً ثم 165 يوماً في حال إصابة المولود بإعاقة أو مرض خطير.</p>
+                    <div class="law-Comparison">
+                        <span class="old-law">❌ المدة القديمة: 98 يوماً (14 أسبوعاً)</span>
+                        <span class="new-law">✅ المدة الجديدة المحينة: 150 يوماً متتالياً (+ تمديد 50 إلى 165 يوماً)</span>
+                    </div>
+                </div>
+
+                <div class="law-card new-2025">
+                    <span class="law-badge">تحيين نقابي - أفريل 2023</span>
+                    <h4>القانون رقم 23-02 المؤرخ في 25 أفريل 2023</h4>
+                    <p>يتعلق بكيفيات ممارسة الحق النقابي في الجمهورية الجزائرية، ويحدد الضمانات القانونية للمندوبين النقابيين، التسهيلات، ساعات التفرغ، وشروط الانتداب لممارسة عهدة نقابية.</p>
+                    <div class="law-Comparison">
+                        <span class="old-law">❌ النص القديم الملغى: القانون رقم 90-14 المؤرخ في 02 جوان 1990</span>
+                        <span class="new-law">✅ النص المحين المعتمد: القانون رقم 23-02 المؤرخ في 25 أفريل 2023</span>
+                    </div>
+                </div>
+
+                <div class="law-card">
+                    <span class="law-badge">الوظيفة العمومية - تعديل 2022</span>
+                    <h4>الأمر رقم 06-03 المتمم بالقانون رقم 22-22</h4>
+                    <p>المتضمن القانون الأساسي العام للوظيفة العمومية المؤرخ في 15 يوليو 2006، المتمم بموجب القانون رقم 22-22 المؤرخ في 18 ديسمبر 2022 الذي استحدث حق الموظف في عطلة غير مدفوعة الأجر لإنشاء مؤسسة.</p>
+                </div>
+
+                <div class="law-card">
+                    <span class="law-badge">الوضعيات القانونية وحركات النقل</span>
+                    <h4>المرسوم التنفيذي رقم 20-373 المؤرخ في 12 ديسمبر 2020</h4>
+                    <p>يتعلق بالوضعيات القانونية الأساسية للموظف (القيام بالخدمة، الانتداب، خارج الإطار، الإحالة على الاستيداع لأغراض شخصية أو عائلية أو تربية طفل، وعطلة إنشاء مؤسسة).</p>
+                </div>
+
+                <div class="law-card">
+                    <span class="law-badge">المسابقات والامتحانات المهنية</span>
+                    <h4>المرسوم التنفيذي رقم 12-194 المؤرخ في 25 أفريل 2012</h4>
+                    <p>يحدد كيفيات تنظيم المسابقات والامتحانات والفحوص المهنية في المؤسسات والإدارات العمومية وإجرائها، وآجال إيداع الطعون الإدارية لدى لجان الانتقاء أو مصالح الوظيفة العمومية.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- التبويب 4: أداة استخراج النص من الصور (OCR) + التحيين التلقائي للقوانين    -->
+        <!-- ========================================================================= -->
+        <div id="tab-ocr" class="tab-pane">
+            <div class="ocr-card">
+                <h2 style="color:var(--snte-green); margin-top:0;">📷 خدمة تحويل الطلبات المصورة إلى نصوص (OCR) مع التحيين القانوني الذكي</h2>
+                <p style="color:#555;">قم برفع صورة لأي طلب خطي قديم أو انسخ نصاً قديماً في المربع أدناه، ثم اضغط على زر <strong>(🔄 تحيين القوانين القديمة تلقائياً)</strong> ليقوم النظام باستبدال المراسيم الملغاة (مثل 08-315 أو 90-14 أو 98 يوماً) بالنصوص القانونية الجديدة لسنة 2025-2026!</p>
+
+                <div class="ocr-upload-zone">
+                    <input type="file" id="imageInput" accept="image/*" style="max-width:350px; margin-bottom:12px;">
+                    <br>
+                    <button class="btn btn-green" onclick="startOCR()">⚙️ استخراج النص العربي من الصورة الآن</button>
+                    <div id="ocrStatus" style="font-weight:bold; margin-top:10px; color:var(--snte-green-dark);"></div>
+                </div>
+
+                <label>النص المستخرج أو الملصق (قابل للتعديل):</label>
+                <textarea id="ocrResult" rows="8" placeholder="سيظهر النص المستخرج هنا... أو يمكنك لصق أي مراسلة قديمة هنا لتحيين قوانينها تلقائياً."></textarea>
+
+                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:15px; justify-content:center;">
+                    <button class="btn btn-print" onclick="autoUpdateLawsInOcrText()">🔄 تحيين القوانين القديمة في النص تلقائياً (2025/2026)</button>
+                    <button class="btn btn-green" onclick="sendOcrToGenerator()">📄 تحويل هذا النص إلى ورقة الطلب الرسمية A4 للطباعة</button>
+                    <button class="btn btn-blue" onclick="copyOcrText()">📋 نسخ النص بالكامل</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- إشعار منبثق أنيق بدون استخدام alert -->
+    <div class="toast-notification" id="toastBox"></div>
+
+    <footer>
+        النقابة الوطنية لعمال التربية SNTE - منظمة نقابية معتمدة تحت رقم 2000/13/7 <br>
+        بوابة الطلبات الخطية والمراسلات الإدارية المحينة قانونياً | جميع الحقوق محفوظة &copy; 2026
+    </footer>
+
+    <!-- ========================================================================= -->
+    <!-- قاعدة البيانات القانونية والبرمجية لـ 36 طلباً خطياً محيناً                -->
+    <!-- ========================================================================= -->
+    <script>
+        // قاعدة البيانات الكاملة لجميع الطلبات الخطية الواردة في الدليل مع تحيين القوانين (2025 - 2026)
+        const REQUEST_TEMPLATES = {
+            cat_promotion: [
+                {
+                    id: 'prom_1',
+                    title: 'طلب التسجيل ضمن قائمة التأهيل للالتحاق برتبة أعلى',
+                    subject: 'طلب التسجيل في قائمة التأهيل للترقية على أساس الاختيار إلى رتبة أعلى',
+                    lawRef: 'الأمر رقم 06-03 المؤرخ في 15 يوليو 2006 المتضمن القانون الأساسي العام للوظيفة العمومية (المادة 107)، والمرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025 المتضمن القانون الأساسي الخاص بالموظفين المنتمين للأسلاك الخاصة بالتربية الوطنية.',
+                    lawNotice: 'تم استبدال المرسوم 08-315 والمرسوم 12-240 بـ (المرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025) الذي ينظم شروط الترقية إلى الرتب الأعلى (قسم أول، قسم ثانٍ، وأستاذ مميز).',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، والمتمثل في التماس تسجيل اسمي ضمن قائمة التأهيل للترقية عن طريق الاختيار إلى الرتبة الأعلى برسم السنة المالية الجارية.\n\nأحيطكم علماً سيدي المدير أنني أستوفي كافة الشروط القانونية والأقدمية المهنية المطلوبة للتسجيل في قوائم التأهيل وفق الأحكام الجديدة المنصوص عليها في المرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025.',
+                    attachments: '- نسخة من قرار الترسيم أو قرار آخر ترقية في الرتبة.\n- نسخة من قرار آخر ترقية في الدرجة.\n- استمارة المعلومات للمشاركة في الترقية عن طريق التسجيل في قائمة التأهيل.'
+                },
+                {
+                    id: 'prom_2',
+                    title: 'طلب الترقية إلى الرتبة الأعلى مباشرة (على أساس الشهادة)',
+                    subject: 'طلب الترقية على أساس الشهادة إلى الرتبة الأعلى مباشرة',
+                    lawRef: 'المادة 107 من الأمر رقم 06-03 المؤرخ في 15 يوليو 2006 المتمم، وأحكام المرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025 المتضمن القانون الأساسي الخاص بأسلاك التربية الوطنية.',
+                    lawNotice: 'محين وفق أحكام الترقية على أساس الشهادة المنصوص عليها في المرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس ترقيتي على أساس الشهادة إلى الرتبة الأعلى مباشرة، وذلك بعد حصولي على المؤهل العلمي / الشهادة المطلوبة قانوناً في التخصص.\n\nوتندرج هذه الترقية في إطار تثمين الشهادات العلمية المحصل عليها أثناء المسار المهني وفقاً لأحكام المادة 107 من الأمر 06-03 والمرسوم التنفيذي رقم 25-54.',
+                    attachments: '- نسخة من الشهادة العلمية المحصل عليها.\n- نسخة من قرار التسمية أو الترسيم في الرتبة الحالية.\n- نسخة من الترخيص بمتابعة الدراسة أو التكوين (إن وجد).'
+                },
+                {
+                    id: 'prom_3',
+                    title: 'طلب الترقية في إطار المادة 25',
+                    subject: 'طلب الاستفادة من الترقية في الرتبة في إطار أحكام المادة 25',
+                    lawRef: 'الأمر رقم 06-03 المؤرخ في 15 يوليو 2006 المتضمن القانون الأساسي العام للوظيفة العمومية المتمم، والمرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025.',
+                    lawNotice: 'تم ربط أحكام الترقية والتصنيف بمقتضيات المرسوم التنفيذي رقم 25-54 الساري المفعول.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، والرامي إلى التماس تسوية وضعيتي المهنية وتمكيني من الاستفادة من الترقية إلى الرتبة الأعلى تطبيقاً للأحكام القانونية والتنظيمية السارية المفعول، نظراً لاستيفائي شروط الأقدمية والتأهيل المطلوبة.',
+                    attachments: '- نسخة من قرار التعيين والترسيم.\n- نسخة من آخر قرار ترقية في الدرجة.\n- مجمل الخدمات الإدارية.'
+                },
+                {
+                    id: 'prom_4',
+                    title: 'طلب ترقية خاصة بأبناء/أرامل الشهداء أو المجاهدين',
+                    subject: 'طلب الاستفادة من الترقية الخاصة بفئة ذوي الحقوق (أبناء وأرامل الشهداء والمجاهدين)',
+                    lawRef: 'القانون رقم 99-07 المؤرخ في 05 أفريل 1999 المتعلق بالمجاهد والشهيد، والأمر رقم 06-03 المؤرخ في 15 يوليو 2006، والمرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025.',
+                    lawNotice: 'يدمج الامتيازات القانونية المقررة في القانون 99-07 مع شبكة الرتب الجديدة في المرسوم التنفيذي 25-54.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس تمكيني من الاستفادة من الترقية الخاصة المقررة قانوناً لفائدة ذوي الحقوق (أبناء وأرامل الشهداء / المجاهدين)، علماً أنني لم أستفد من هذا الإجراء سابقاً طيلة مساري المهني.',
+                    attachments: '- شهادة صفة ابن(ة) أو أرملة شهيد / مجاهد مستخرجة من المصالح المختصة.\n- نسخة من قرار الترسيم وآخر ترقية.\n- تصريح شرفي بعدم الاستفادة السابقة.'
+                },
+                {
+                    id: 'prom_5',
+                    title: 'طلب ترقية بزيادة صنفين (شهداء/مجاهدين)',
+                    subject: 'طلب الاستفادة من زيادة صنفين في التصنيف قبل الإحالة على التقاعد (ذوي الحقوق)',
+                    lawRef: 'القانون رقم 99-07 المؤرخ في 05 أفريل 1999 المتعلق بالمجاهد والشهيد، والمرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025.',
+                    lawNotice: 'يضمن تطبيق امتياز زيادة الصنفين على شبكة التصنيف المحينة في المرسوم التنفيذي 25-54.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس منحي الاستفادة من الترقية بزيادة صنفين (02) في التصنيف المقررة قانوناً لفائدة فئة المجاهدين وذوي حقوق الشهداء، وذلك تحضيراً لتصفية حقوقي التقاعدية.',
+                    attachments: '- شهادة إثبات صفة مجاهد أو ابن(ة) شهيد.\n- نسخة من آخر قرار ترقية في الرتبة والدرجة.'
+                },
+                {
+                    id: 'prom_6',
+                    title: 'طلب الإستفادة من ترقية استثنائية',
+                    subject: 'طلب الاستفادة من ترقية استثنائية في الرتبة',
+                    lawRef: 'الأمر رقم 06-03 المؤرخ في 15 يوليو 2006 المتضمن القانون الأساسي العام للوظيفة العمومية المتمم، والمرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025.',
+                    lawNotice: 'محين وفق الأحكام الاستثنائية للترقية والإدماج في المرسوم التنفيذي 25-54.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، التماساً للاستفادة من ترقية استثنائية في الرتبة، بالنظر إلى الأقدمية المكتسبة والمجهودات البيداغوجية والإدارية المبذولة طيلة مساري المهني في قطاع التربية الوطنية.',
+                    attachments: '- نسخة من القرارات الإدارية المثبتة للأقدمية.\n- نسخ من الشهادات التقديرية وتقارير التفتيش.'
+                },
+                {
+                    id: 'prom_7',
+                    title: 'طلب الترقية في الرتبة للموظفين المتواجدين في حالة إنتداب',
+                    subject: 'طلب الترقية في الرتبة الأصلية أثناء التواجد في وضعية انتداب قانوني',
+                    lawRef: 'المواد 133 إلى 139 من الأمر رقم 06-03 المؤرخ في 15 يوليو 2006، والمرسوم التنفيذي رقم 20-373 المتعلق بالوضعيات القانونية الأساسية للموظف، والمرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025.',
+                    lawNotice: 'محين بالمرسوم التنفيذي 20-373 والمرسوم 25-54 اللذين يكفلان حق الموظف المنتدب في الترقية في سلكه الأصلي.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس إدراجي ضمن قوائم الترقية في رتبتي الأصلية، حيث أنني أتواجد حالياً في وضعية قانونية (انتداب)، وأحتفظ قانوناً بحقي الكامل في الترقية في الدرجات والرتب في سلكي الأصلي طبقاً لأحكام الأمر 06-03 والمرسوم التنفيذي 20-373.',
+                    attachments: '- نسخة من قرار الانتداب الساري المفعول.\n- نسخة من آخر قرار ترقية في السلك الأصلي.\n- بطاقة التقييم الممنوحة من الهيئة المستقبلة.'
+                }
+            ],
+            cat_career: [
+                {
+                    id: 'car_1',
+                    title: 'طلب تسوية وضعية تجاه فترة التربص (الترسيم / التثبيت)',
+                    subject: 'طلب الترسيم (التثبيت) في الرتبة بعد انقضاء فترة التربص التجريبية',
+                    lawRef: 'المواد 83 إلى 92 من الأمر رقم 06-03 المؤرخ في 15 يوليو 2006، وأحكام المرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025 المتضمن القانون الأساسي الخاص بأسلاك التربية الوطنية.',
+                    lawNotice: 'تم تحيين إجراءات التربص والترسيم وفق الأحكام الجديدة للمرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس تسوية وضعيتي المهنية وبرمجة امتحان/إجراءات ترسيمي (تثبيتي) في رتبتي الحالية، وذلك بعد استكمالي للفترة القانونية للتربص التجريبي بنجاح.',
+                    attachments: '- نسخة من محضر التنصيب.\n- نسخة من قرار التعيين بصفة متربص.\n- شهادة متابعة التكوين البيداغوجي التحضيري (إن وجدت).'
+                },
+                {
+                    id: 'car_2',
+                    title: 'طلب إعادة إدماج بعد العزل بسبب إهمال المنصب',
+                    subject: 'تظلم وطلب إعادة الإدماج في المنصب بعد صدور مقرر العزل بسبب إهمال المنصب',
+                    lawRef: 'المادة 184 من الأمر رقم 06-03 المؤرخ في 15 يوليو 2006، والمرسوم التنفيذي رقم 17-321 المؤرخ في 02 نوفمبر 2017 المحدد لكيفيات عزل الموظف بسبب إهمال المنصب.',
+                    lawNotice: 'يستند بدقة إلى المرسوم التنفيذي 17-321 المحدد لآجال وإجراءات الإعذار والطعن وإعادة الإدماج عند وجود القوة القاهرة.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس إعادة إدماجي في منصب عملي وإلغاء مقرر العزل المتخذ بسبب الغياب، حيث أن توقفي عن العمل كان راجعاً لظروف قاهرة وخارجة عن إرادتي كما تثبته الوثائق التبريرية المرفقة بهذا الطلب طبقاً لأحكام المرسوم التنفيذي رقم 17-321.',
+                    attachments: '- الوثائق الرسمية المثبتة للعذر المانع أو القوة القاهرة.\n- نسخة من مقرر العزل أو الإعذار (إن وجد).'
+                },
+                {
+                    id: 'car_3',
+                    title: 'طلب الترخيص بالمشاركة في مسابقة توظيف خارجية',
+                    subject: 'طلب رخصة إدارية للمشاركة في مسابقة توظيف خارجية',
+                    lawRef: 'الأمر رقم 06-03 المؤرخ في 15 يوليو 2006 المتمم، والمرسوم التنفيذي رقم 12-194 المؤرخ في 25 أفريل 2012 المحدد لكيفيات تنظيم المسابقات والامتحانات المهنية.',
+                    lawNotice: 'مطابق لتعليمات المديرية العامة للوظيفة العمومية والإصلاح الإداري الخاصة بمشاركة الموظفين في المسابقات الخارجية.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس منحي ترخيصاً إدارياً للمشاركة في مسابقة التوظيف الخارجية، مع التعهد باحترام الالتزامات المهنية والإجراءات القانونية المعمول بها في هذا الشأن.',
+                    attachments: '- نسخة من الإعلان عن المسابقة.\n- نسخة من المؤهل أو الشهادة العلمية.'
+                },
+                {
+                    id: 'car_4',
+                    title: 'طلب مواصلة النشاط بعد السن القانونية للتقاعد',
+                    subject: 'طلب الترخيص بمواصلة النشاط بعد بلوغ السن القانونية للتقاعد',
+                    lawRef: 'القانون رقم 83-12 المتعلق بالتقاعد المعدل والمتمم، وأحكام المرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025.',
+                    lawNotice: 'يوازن بين أحكام القانون 83-12 المعدل والمادة 12 من المرسوم التنفيذي 25-54.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، وفي الآجال القانونية المحددة قبل بلوغ السن القانونية للتقاعد، قصد التماس الموافقة على استمراري ومواصلتي للنشاط المهني، نظراً لقدرتي الصحية والبدنية ورغبتي في مواصلة أداء مهامي البيداغوجية والإدارية.',
+                    attachments: '- شهادة ميلاد.\n- شهادة طبية تثبت القدرة على مواصلة النشاط.\n- قرار التعيين وآخر ترقية.'
+                },
+                {
+                    id: 'car_5',
+                    title: 'طلب الاستفادة من عطلة التحرك المهني (مستحدثة بالمرسوم 25-54)',
+                    subject: 'طلب الاستفادة من عطلة التحرك المهني القابلة للتجديد',
+                    lawRef: 'المواد 32 إلى 36 من المرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025 المتضمن القانون الأساسي الخاص بالموظفين المنتمين للأسلاك الخاصة بالتربية الوطنية.',
+                    lawNotice: 'حق جديد مستحدث بموجب المواد 32-36 من المرسوم التنفيذي 25-54 يمكّن موظفي التربية من عطلة تحرك مهني لتعميق المعارف أو إعداد مشاريع تكوينية.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، التماساً لمنحي الاستفادة من "عطلة التحرك المهني" المنصوص عليها في المواد من 32 إلى 36 من المرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025، وذلك قصد تعميق معارفي في مجال تخصصي وتحسين الأداء البيداغوجي.',
+                    attachments: '- ملف تبريري لمشروع التكوين أو البحث.\n- مجمل الخدمات المثبت للأقدمية الفعلية المطلوبة.'
+                }
+            ],
+            cat_status: [
+                {
+                    id: 'stat_1',
+                    title: 'نموذج طلب نقل (داخل أو خارج الولاية)',
+                    subject: 'طلب النقل الإداري',
+                    lawRef: 'المواد 156 إلى 159 من الأمر رقم 06-03 المؤرخ في 15 يوليو 2006، وأحكام المرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025.',
+                    lawNotice: 'محين وفق قواعد حركة التنقلات المنصوص عليها في الأمر 06-03 والمرسوم التنفيذي 25-54.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس الموافقة على نقلي من مؤسستي الحالية إلى إحدى المؤسسات التربوية التي اخترتها في بطاقة الرغبات، وذلك لاعتبارات اجتماعية وعائلية ومهنية.',
+                    attachments: '- بطاقة الرغبات ممضاة.\n- شهادة عمل + شهادة إقامة.\n- الوثائق المثبتة للوضعية العائلية أو الصحية (إن وجدت).'
+                },
+                {
+                    id: 'stat_2',
+                    title: 'طلب نقل عون متربص',
+                    subject: 'طلب نقل استثنائي لموظف متربص للضرورة القاهرة',
+                    lawRef: 'الأمر رقم 06-03 المؤرخ في 15 يوليو 2006، والمرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025.',
+                    lawNotice: 'يراعي الضوابط الاستثنائية لتحويل منصب المتربص للضرورة الملحة.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس النظر بعين الاعتبار في طلبي الرامي إلى نقلي بصفة استثنائية نظراً للظروف العائلية والاجتماعية القاهرة التي طرأت بعد تنصيبي.',
+                    attachments: '- نسخة من محضر التنصيب.\n- الوثائق التبريرية للظرف الاستثنائي (شهادة إقامة، شهادة عائلية...).'
+                },
+                {
+                    id: 'stat_3',
+                    title: 'طلب التسجيل في جدول حركة الموظفين',
+                    subject: 'طلب الإدراج ضمن جدول الحركة التنقلية السنوية للموظفين',
+                    lawRef: 'المادة 157 من الأمر رقم 06-03 المؤرخ في 15 يوليو 2006، والمرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025.',
+                    lawNotice: 'محين وفق التنظيم الجديد لحركة التنقلات السنوية لأسلاك التربية الوطنية (المرسوم 25-54).',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس تسجيلي وإدراج اسمي في جدول الحركة التنقلية السنوية للموظفين برسم الموسم الدراسي المقبل، علماً أنني استوفيت مدة المكوث القانونية في منصبي الحالي.',
+                    attachments: '- استمارة المشاركة في الحركة التنقلية.\n- نسخة من قرار التعيين في المنصب الحالي.\n- نسخة من آخر قرار ترقية وتفتيش.'
+                },
+                {
+                    id: 'stat_4',
+                    title: 'طلب إعادة إدماج بعد فترة الخدمة الوطنية',
+                    subject: 'طلب إعادة الإدماج في منصب العمل الأصلي بعد أداء واجب الخدمة الوطنية',
+                    lawRef: 'القانون رقم 14-06 المؤرخ في 09 أوت 2014 المتعلق بالخدمة الوطنية، والأمر رقم 06-03 المؤرخ في 15 يوليو 2006، والمرسوم التنفيذي رقم 20-373.',
+                    lawNotice: 'يكفل حق إعادة الإدماج الفوري بقوة القانون حتى ولو كان زائداً عن العدد، مع احتساب فترة الخدمة الوطنية في الترقية والتقاعد.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس إعادة إدماجي في منصب عملي الأصلي مع احتساب الفترة المقضية في الخدمة الوطنية ضمن الأقدمية المهنية للترقية والتقاعد، وذلك إثر إنهاء واجبي الوطني وتسريحي رسمياً.',
+                    attachments: '- نسخة من شهادة التسريح النهائي من الخدمة الوطنية.\n- نسخة من مقرر الإحالة على وضعية الخدمة الوطنية.'
+                },
+                {
+                    id: 'stat_5',
+                    title: 'طلب إنتداب لممارسة عهدة إنتخابية أو نقابية',
+                    subject: 'طلب الإحالة على وضعية الانتداب لممارسة عهدة نقابية / انتخابية',
+                    lawRef: 'القانون رقم 23-02 المؤرخ في 25 أفريل 2023 المتعلق بممارسة الحق النقابي، والأمر رقم 06-03 المؤرخ في 15 يوليو 2006 (المادة 134)، والمرسوم التنفيذي رقم 20-373 المؤرخ في 12 ديسمبر 2020.',
+                    lawNotice: 'تم تحيين هذا الطلب بإدراج القانون الجديد رقم 23-02 المؤرخ في 25 أفريل 2023 المتعلق بممارسة الحق النقابي (بدلاً من القانون القديم الملغى 90-14).',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس وضعي في حالة انتداب قانوني لممارسة عهدة نقابية / انتخابية، وذلك تطبيقاً لأحكام المادة 134 من الأمر رقم 06-03 وأحكام القانون رقم 23-02 المؤرخ في 25 أفريل 2023 المتعلق بممارسة الحق النقابي.',
+                    attachments: '- محضر الانتخاب أو التكليف الرسمي الصادر عن الهيئة المعنية (النقابة الوطنية لعمال التربية SNTE / الهيئة الانتخابية).\n- نسخة من قرار الترسيم.'
+                },
+                {
+                    id: 'stat_6',
+                    title: 'طلب الإحالة على عطلة مرضية طويلة المدى أو العجز',
+                    subject: 'طلب الإحالة على عطلة مرضية طويلة المدى',
+                    lawRef: 'القانون رقم 83-11 المتعلق بالتأمينات الاجتماعية المعدل والمتمم بالقانون رقم 25-08 المؤرخ في 19 يوليو 2025، والأمر رقم 06-03، والمرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025.',
+                    lawNotice: 'محين وفق القانون 25-08 والمرسوم التنفيذي 25-54.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس إحالتي على عطلة مرضية طويلة المدى، نظراً لوضعيتي الصحية التي تستدعي علاجاً مطولاً وراحة طبية مستمرة كما هو مبين في الملف الطبي المرفق والمصادق عليه من طرف الطبيب المختص والمراقبة الطبية.',
+                    attachments: '- تقرير طبي مفصل من الطبيب المعالج المختص.\n- قرار المصادقة الطبية من مصالح الضمان الاجتماعي (CNAS).'
+                },
+                {
+                    id: 'stat_7',
+                    title: 'طلب الإحالة على الاستيداع / عطلة إنشاء مؤسسة',
+                    subject: 'طلب الإحالة على الاستيداع القانوني (أو عطلة غير مدفوعة الأجر لإنشاء مؤسسة)',
+                    lawRef: 'الأمر رقم 06-03 المؤرخ في 15 يوليو 2006 المتمم بموجب القانون رقم 22-22 المؤرخ في 18 ديسمبر 2022، والمرسوم التنفيذي رقم 20-373 المؤرخ في 12 ديسمبر 2020.',
+                    lawNotice: 'يشمل التحيين الجديد بموجب القانون 22-22 الذي يمنح الموظف حق الاستفادة من عطلة غير مدفوعة الأجر لإنشاء مؤسسة، بالإضافة لحالات الاستيداع في المرسوم 20-373.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس الموافقة على إحالتي على وضعية الاستيداع القانوني (أو عطلة غير مدفوعة الأجر)، وذلك للأسباب القانونية المبررة في الملف المرفق وفقاً لأحكام الأمر 06-03 المتمم بالقانون 22-22 والمرسوم التنفيذي 20-373.',
+                    attachments: '- الوثائق التبريرية لسبب الاستيداع (شهادة طبية للزوج/الأصول، أو شهادة ميلاد طفل أقل من 5 سنوات، أو ملف مشروع إنشاء مؤسسة).'
+                }
+            ],
+            cat_highpost: [
+                {
+                    id: 'hp_1',
+                    title: 'الموافقة على الإقتراح قصد التعيين في منصب عالي',
+                    subject: 'الموافقة الكتابية على الاقتراح قصد التعيين في منصب عالي',
+                    lawRef: 'الأمر رقم 06-03 المؤرخ في 15 يوليو 2006، والمرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025 المتضمن القانون الأساسي الخاص بأسلاك التربية الوطنية.',
+                    lawNotice: 'محين وفق أحكام المناصب العليا للتربية الوطنية الواردة في المرسوم التنفيذي رقم 25-54.',
+                    body: 'يشرفني أن أنهي إلى علم سيادتكم المحترمة موافقتي الكتابية الصريحة على الاقتراح المتعلق بتعييني في المنصب العالي، متعهداً بأداء المهام المسندة إليّ بكل أمانة وإخلاص واحترام القوانين والتنظيمات السارية المفعول.',
+                    attachments: '- سيرة ذاتية مفصلة.\n- نسخة من قرار آخر ترقية في الرتبة والدرجة.'
+                },
+                {
+                    id: 'hp_2',
+                    title: 'الموافقة على الإقتراح قصد التعيين بعد الانتداب',
+                    subject: 'طلب التعيين وإعادة الإدماج بعد انتهاء فترة الانتداب في منصب عالي',
+                    lawRef: 'الأمر رقم 06-03 المؤرخ في 15 يوليو 2006، والمرسوم التنفيذي رقم 20-373، والمرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025.',
+                    lawNotice: 'محين وفق المرسوم 20-373 والمرسوم 25-54.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس تسوية وضعيتي الإدارية والتعيين في المنصب الموافق لرتبتي إثر انتهاء مهام انتدابي، مع حفظ كافة حقوقي المكتسبة.',
+                    attachments: '- نسخة من مقرر إنهاء الانتداب.\n- نسخة من آخر قرار ترقية.'
+                },
+                {
+                    id: 'hp_3',
+                    title: 'الإعفاء من مهام منصب عالي',
+                    subject: 'طلب الإعفاء من مهام منصب عالي بطلب من المعني',
+                    lawRef: 'الأمر رقم 06-03 المؤرخ في 15 يوليو 2006، والمرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025.',
+                    lawNotice: 'يضمن حق الموظف في العودة إلى رتبته الأصلية بعد قبول الإعفاء من المنصب العالي.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس قبول إعفائي من مهام المنصب العالي الذي أشغله حالياً وإعادة إدماجي في رتبتي الأصلية، وذلك لظروف شخصية وصحية تحول دون مواصلتي لأعباء هذا المنصب.',
+                    attachments: '- نسخة من قرار التعيين في المنصب العالي.\n- الوثائق التبريرية (إن وجدت).'
+                }
+            ],
+            cat_termination: [
+                {
+                    id: 'term_1',
+                    title: 'طلب الموافقة على الإستقالة',
+                    subject: 'طلب الاستقالة من المنصب',
+                    lawRef: 'المواد 217 إلى 220 من الأمر رقم 06-03 المؤرخ في 15 يوليو 2006 المتضمن القانون الأساسي العام للوظيفة العمومية.',
+                    lawNotice: 'يذكّر بالتزام الموظف بمواصلة مهامه إلى غاية صدور قرار قبول الاستقالة في الآجال القانونية المنصوص عليها في المواد 217-220 من الأمر 06-03.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس الموافقة على استقالتي النهائية من منصب عملي، وذلك لأسباب شخصية خاصة، مع التزامي التام بمواصلة أداء واجباتي المهنية إلى غاية تبليغي بقرار قبول الاستقالة طبقاً لأحكام المادة 219 من الأمر رقم 06-03.',
+                    attachments: '- شهادة إبراء الذمة الإدارية والمالية.\n- نسخة من قرار التعيين أو الترسيم.'
+                },
+                {
+                    id: 'term_2',
+                    title: 'طلب الإحالة على التقاعد (محين وفق المادة 12 من المرسوم 25-54)',
+                    subject: 'طلب الإحالة على التقاعد وتصفية المعاش',
+                    lawRef: 'القانون رقم 83-12 المؤرخ في 02 يوليو 1983 المتعلق بالتقاعد المعدل والمتمم، والمادة 12 من المرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025 المتضمن القانون الأساسي الخاص بالموظفين المنتمين للأسلاك الخاصة بالتربية الوطنية.',
+                    lawNotice: 'تم تحيين هذا الطلب بإدراج المادة 12 من المرسوم التنفيذي الجديد رقم 25-54 المؤرخ في 23 جانفي 2025 التي تمنح موظفي التربية الوطنية إمكانية الإحالة على التقاعد بطلب منهم قبل السن القانونية وفق الشروط التنظيمية.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس إحالتي على التقاعد وتصفية ملف معاشي، حيث أنني أستوفي الشروط القانونية وسنوات الخدمة الفعلية المطلوبة طبقاً لأحكام القانون رقم 83-12 المعدل والمتمم، وأحكام المادة 12 من المرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025.',
+                    attachments: '- شهادة ميلاد أصلية + شهادة عائلية للحالة المدنية.\n- مجمل الخدمات الإدارية وكشوف الرواتب للسنوات الخمس الأخيرة.\n- صك بريدي مشطوب.'
+                },
+                {
+                    id: 'term_3',
+                    title: 'طلب الإحالة على التقاعد أثناء التواجد في حالة إنتداب',
+                    subject: 'طلب الإحالة على التقاعد لموظف في وضعية انتداب',
+                    lawRef: 'القانون رقم 83-12 المتعلق بالتقاعد المعدل والمتمم، والمرسوم التنفيذي رقم 20-373، والمادة 12 من المرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025.',
+                    lawNotice: 'محين وفق المرسوم 20-373 والمادة 12 من المرسوم 25-54.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس إنهاء انتدابي وإحالتي مباشرة على التقاعد لاستيفائي الشروط القانونية وسنوات العمل المطلوبة، مع تكوين ملف المعاش لدى الصندوق الوطني للتقاعد.',
+                    attachments: '- قرار الانتداب + مجمل الخدمات.\n- وثائق الحالة المدنية وكشوف الرواتب.'
+                }
+            ],
+            cat_misc: [
+                {
+                    id: 'misc_1',
+                    title: 'الإستفادة من تعويض الخبرة المهنية (احتساب الأقدمية)',
+                    subject: 'طلب احتساب وتثمين الخبرة المهنية المكتسبة قبل التوظيف',
+                    lawRef: 'الأمر رقم 06-03 المؤرخ في 15 يوليو 2006، والمنشور رقم 01 المؤرخ في 09 جانفي 2008 المتعلق بتثمين الخبرة المهنية، والمرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025.',
+                    lawNotice: 'محين وفق أحكام تثمين الخبرة المهنية والترقية في الدرجات في المرسوم التنفيذي 25-54.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس احتساب وتثمين سنوات الخبرة المهنية التي قضيتها قبل توظيفي في الرتبة الحالية، وتحويلها إلى أقدمية محتسبة للترقية في الدرجات طبقاً للتنظيم المعمول به.',
+                    attachments: '- شهادات العمل الأصلية للفترات السابقة.\n- شهادة الانتساب وأداء الاشتراكات صادرة عن صندوق الضمان الاجتماعي (CNAS).\n- نسخة من قرار الترسيم.'
+                },
+                {
+                    id: 'misc_2',
+                    title: 'الإستفادة من الزيادة في الأقدمية الخاصة بالجنوب',
+                    subject: 'طلب الاستفادة من امتياز الزيادة في الأقدمية الخاصة بمناطق الجنوب والهضاب العليا',
+                    lawRef: 'المرسوم رقم 72-199 المؤرخ في 05 أكتوبر 1972 والنصوص اللاحقة المعدلة والمتممة له المتعلقة بامتيازات الأقدمية في ولايات الجنوب، والمرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025.',
+                    lawNotice: 'محين مع شبكة الترقية والرتب الجديدة في المرسوم التنفيذي 25-54.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس تمكيني من الاستفادة من الزيادة القانونية في الأقدمية عن سنوات الخدمة الفعلية المؤداة بقطاع التربية الوطنية في المنطقة المشمولة بالتنظيم الساري المفعول، وذلك قصد احتسابها في الترقية في الدرجات والرتب.',
+                    attachments: '- مجمل الخدمات الإدارية.\n- شهادات العمل المثبتة للعمل المتواصل في المنطقة المعنية.\n- نسخة من آخر قرار ترقية.'
+                },
+                {
+                    id: 'misc_3',
+                    title: 'الإستفادة من منصب عمل مكيف (المادة 21 من المرسوم 25-54)',
+                    subject: 'طلب الاستفادة من منصب عمل مكيف لأسباب صحية',
+                    lawRef: 'المادة 21 من المرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025 المتضمن القانون الأساسي الخاص بالموظفين المنتمين للأسلاك الخاصة بالتربية الوطنية.',
+                    lawNotice: 'تم تحيين هذا الطلب استناداً إلى المادة 21 من المرسوم التنفيذي الجديد رقم 25-54 المؤرخ في 23 جانفي 2025 التي كرست صراحة حق موظف التربية في منصب عمل مكيف أو تكييف الحجم الساعي عند تدهور حالته الصحية.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس إحالتي على اللجنة الطبية المختصة لتمكيني من الاستفادة من "منصب عمل مكيف" يتلاءم مع وضعيتي الصحية الحالية، وذلك تطبيقاً لأحكام المادة 21 من المرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025.',
+                    attachments: '- ملف طبي كامل وتفصيلي صادر عن الطبيب المختص.\n- تقرير طب العمل / المراقبة الطبية للضمان الاجتماعي.\n- شهادة عمل.'
+                },
+                {
+                    id: 'misc_4',
+                    title: 'نموذج طلب شهادة عمل',
+                    subject: 'طلب استخراج شهادة عمل',
+                    lawRef: 'الأمر رقم 06-03 المؤرخ في 15 يوليو 2006 المتضمن القانون الأساسي العام للوظيفة العمومية.',
+                    lawNotice: 'وثيقة إدارية دورية محينة.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس التفضل بمنحي شهادة عمل حديثة تثبت انتسابي وعملي بالمؤسسة، وذلك لاستعمالها في ملف إداري في حدود ما يسمح به القانون.',
+                    attachments: '- لا توجد مرفقات.'
+                },
+                {
+                    id: 'misc_5',
+                    title: 'نموذج طلب كشف الراتب',
+                    subject: 'طلب استخراج كشف الراتب الشهري / السنوي',
+                    lawRef: 'الأمر رقم 06-03 المؤرخ في 15 يوليو 2006 المتضمن القانون الأساسي العام للوظيفة العمومية.',
+                    lawNotice: 'وثيقة مالية وإدارية محينة.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس التفضل بمنحي كشف الراتب، وذلك لحاجتي الماسة إليه في استكمال ملف إداري واجتماعي.',
+                    attachments: '- لا توجد مرفقات.'
+                }
+            ],
+            cat_leaves: [
+                {
+                    id: 'leave_1',
+                    title: 'طلب الإستفادة من عطلة سنوية',
+                    subject: 'طلب الاستفادة من العطلة السنوية المدفوعة الأجر',
+                    lawRef: 'المواد 194 إلى 206 من الأمر رقم 06-03 المؤرخ في 15 يوليو 2006، والمرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025.',
+                    lawNotice: 'محين وفق أحكام العطل القانونية لأسلاك التربية الوطنية.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس منحي الاستفادة من عطلتي السنوية القانونية المستحقة برسم السنة الجارية، وفق الرزنامة التنظيمية المعمول بها في القطاع.',
+                    attachments: '- نسخة من محضر استئناف العمل للسنة الجارية.'
+                },
+                {
+                    id: 'leave_2',
+                    title: 'طلب الإستفادة من رصيد متبقي للعطلة السنوية',
+                    subject: 'طلب استنفاذ الرصيد المتبقي من العطلة السنوية المؤجلة',
+                    lawRef: 'المادة 205 من الأمر رقم 06-03 المؤرخ في 15 يوليو 2006 المتضمن القانون الأساسي العام للوظيفة العمومية.',
+                    lawNotice: 'يستند إلى المادة 205 من الأمر 06-03 المتعلقة بترحيل وتأجيل جزء من العطلة السنوية لضرورة المصلحة.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس الموافقة على تمكيني من استنفاذ الرصيد المتبقي من عطلتي السنوية السابقة والذي تم تأجيله لضرورة المصلحة.',
+                    attachments: '- نسخة من مقرر تأجيل أو قطع العطلة السنوية السابقة.'
+                },
+                {
+                    id: 'leave_3',
+                    title: 'طلب الإستفادة من عطلة أمومة (150 يوماً - القانون الجديد 25-08)',
+                    subject: 'طلب الاستفادة من عطلة أمومة لمدة مائة وخمسين (150) يوماً متتالياً',
+                    lawRef: 'القانون رقم 25-08 المؤرخ في 19 يوليو 2025 المعدل والمتمم للقانون رقم 83-11 المؤرخ في 02 يوليو 1983 المتعلق بالتأمينات الاجتماعية، والأمر رقم 06-03 المؤرخ في 15 يوليو 2006 (المادة 213).',
+                    lawNotice: 'تحديث هام جداً (يوليو 2025): تم تحيين مدة عطلة الأمومة من 98 يوماً إلى (150 يوماً متتالياً) بتعويض يومي 100% تطبيقاً للقانون الجديد رقم 25-08 المؤرخ في 19 يوليو 2025!',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس إصدار مقرر إحالتي على عطلة أمومة لمدة مائة وخمسين (150) يوماً متتالياً، وذلك تطبيقاً للأحكام الجديدة المنصوص عليها في القانون رقم 25-08 المؤرخ في 19 يوليو 2025 المعدل والمتمم للقانون رقم 83-11 المتعلق بالتأمينات الاجتماعية.',
+                    attachments: '- الشهادة الطبية للوضع أو التوقف عن العمل بسبب الأمومة.\n- شهادة ميلاد المولود.\n- نسخة من بطاقة الشفاء واستمارة التصريح لدى وكالة CNAS.'
+                },
+                {
+                    id: 'leave_4',
+                    title: 'طلب تمديد عطلة أمومة بـ 50 أو 165 يوماً (القانون الجديد 25-08)',
+                    subject: 'طلب تمديد عطلة الأمومة لأسباب صحية متعلقة بالمولود (50 يوماً / 165 يوماً إضافياً)',
+                    lawRef: 'القانون رقم 25-08 المؤرخ في 19 يوليو 2025 المعدل والمتمم للقانون رقم 83-11 المتعلق بالتأمينات الاجتماعية (المادة 29 المعدلة).',
+                    lawNotice: 'مستحدث بموجب القانون رقم 25-08 المؤرخ في 19 يوليو 2025: يمنح الأم الموظفة حق تمديد عطلة الأمومة بـ 50 يوماً إضافياً، ويمكن أن يصل التمديد إلى 165 يوماً إضافياً إذا وُلد الطفل مصاباً بإعاقة أو تشوه خلقي أو مرض خطير يستدعي مرافقة إلزامية.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قبل خمسة عشر (15) يوماً من انتهاء مدة عطلة الأمومة القانونية (150 يوماً)، قصد التماس تمديد عطلة الأمومة لفترة إضافية طبقاً لأحكام القانون رقم 25-08 المؤرخ في 19 يوليو 2025، نظراً للوضعية الصحية لمولودي التي تستدعي مرافقة ورعاية طبية متواصلة كما يثبته الملف الطبي المرفق.',
+                    attachments: '- تقرير طبي مفصل صادر عن طبيب مختص في طب الأطفال يثبت الحالة الصحية للمولود.\n- موافقة مصالح المراقبة الطبية للصندوق الوطني للتأمينات الاجتماعية للعمال الأجراء (CNAS).\n- نسخة من مقرر عطلة الأمومة الأصلي (150 يوماً).'
+                },
+                {
+                    id: 'leave_5',
+                    title: 'طلب الإستفادة من عطلة مرضية',
+                    subject: 'إشعار بالتوقف عن العمل وطلب الاستفادة من عطلة مرضية',
+                    lawRef: 'المادة 201 من الأمر رقم 06-03 المؤرخ في 15 يوليو 2006، والقانون رقم 83-11 المتعلق بالتأمينات الاجتماعية المعدل والمتمم بالقانون رقم 25-08.',
+                    lawNotice: 'محين وفق إجراءات التصريح بالعطل المرضية في الآجال القانونية (48 ساعة).',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، مرفقاً بالشهادة الطبية المحددة لمدة التوقف عن العمل لأسباب صحية، ملتمساً منكم قبول تبرير غيابي ومنحي عطلة مرضية خلال المدة المحددة في الشهادة الطبية.',
+                    attachments: '- الشهادة الطبية الأصلية للتوقف عن العمل.\n- وصل إيداع الشهادة الطبية لدى مصالح الضمان الاجتماعي (CNAS).'
+                }
+            ],
+            cat_exams: [
+                {
+                    id: 'exam_1',
+                    title: 'طلب المشاركة في المسابقة على أساس الشهادات',
+                    subject: 'طلب خطي للمشاركة في مسابقة التوظيف على أساس الشهادة',
+                    lawRef: 'المرسوم التنفيذي رقم 12-194 المؤرخ في 25 أفريل 2012 المحدد لكيفيات تنظيم المسابقات والامتحانات والفحوص المهنية، والمرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025.',
+                    lawNotice: 'محين وفق شروط التوظيف والتخصصات المعتمدة في المرسوم التنفيذي رقم 25-54 والمرسوم 12-194.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس قبول ترشحي وتسجيلي ضمن قوائم المشاركين في مسابقة التوظيف الخارجي على أساس الشهادة للالتحاق بقطاع التربية الوطنية، علماً أنني أحوز المؤهل العلمي المطلوب وأستوفي كافة الشروط القانونية.',
+                    attachments: '- استمارة معلومات للمشاركة في المسابقة على أساس الشهادة ممضاة.\n- نسخة من المؤهل أو الشهادة العلمية مرفقة بكشوف النقاط للمسار الدراسي.\n- نسخة من بطاقة التعريف الوطنية البيومترية.\n- شهادات العمل التي تثبت الخبرة المهنية (إن وجدت).'
+                },
+                {
+                    id: 'exam_2',
+                    title: 'طعن في قرار رفض ملف المشاركة (مسابقة الشهادات)',
+                    subject: 'طعن إداري في قرار رفض ملف الترشح لمسابقة التوظيف على أساس الشهادة',
+                    lawRef: 'المادة 15 من المرسوم التنفيذي رقم 12-194 المؤرخ في 25 أفريل 2012 المحدد لكيفيات تنظيم المسابقات والامتحانات والفحوص المهنية.',
+                    lawNotice: 'يستند صراحة إلى المادة 15 من المرسوم التنفيذي 12-194 التي تمنح المترشح حق إيداع طعن كتابي قبل خمسة (05) أيام عمل على الأقل من تاريخ إجراء المسابقة.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطعني الإداري هذا ضد قرار لجنة دراسة الملفات القاضي برفض ملف ترشحي للمشاركة في المسابقة على أساس الشهادة، ملتمساً منكم إعادة دراسة ملفي وقبول مشاركتي بناءً على الوثائق التبريرية المرفقة التي تثبت استيفائي للشروط القانونية طبقاً لأحكام المادة 15 من المرسوم التنفيذي رقم 12-194.',
+                    attachments: '- نسخة من وصل إيداع ملف الترشح.\n- الوثائق التكميلية أو التبريرية التي ترفع سبب الرفض.'
+                },
+                {
+                    id: 'exam_3',
+                    title: 'طعن في النتائج النهائية للمسابقة (مقدم للإدارة)',
+                    subject: 'طعن إداري في النتائج النهائية لمسابقة التوظيف ومراجعة التنقيط',
+                    lawRef: 'المرسوم التنفيذي رقم 12-194 المؤرخ في 25 أفريل 2012، والتعليمة رقم 01 المؤرخة في 20 فيفري 2013 المتعلقة بتطبيق أحكام المرسوم 12-194.',
+                    lawNotice: 'محين وفق معايير الانتقاء وسلم التنقيط المعتمد في الوظيفة العمومية.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطعني الإداري هذا على إثر الإعلان عن النتائج النهائية لمسابقة التوظيف، ملتمساً منكم التفضل بمراجعة مجموع النقاط الممنوحة لملفي (أقدمية الشهادة، المعدل، الخبرة المهنية، المقابلة) وفق سلم التنقيط القانوني المعمول به.',
+                    attachments: '- نسخة من استدعاء المشاركة أو وصل الإيداع.\n- نسخ من الوثائق المثبتة للنقاط المستحقة.'
+                },
+                {
+                    id: 'exam_4',
+                    title: 'طعن في النتائج النهائية للمسابقة (مقدم للوظيفة العمومية)',
+                    subject: 'تظلم وطعن لدى مصالح مفتشية الوظيفة العمومية بخصوص نتائج مسابقة التوظيف',
+                    lawRef: 'الأمر رقم 06-03 المؤرخ في 15 يوليو 2006، والمرسوم التنفيذي رقم 12-194 المؤرخ في 25 أفريل 2012.',
+                    lawNotice: 'موجه مباشرة إلى السيد رئيس مفتشية الوظيفة العمومية للولاية في إطار الرقابة البعدية على مشروعية المسابقات.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة، بصفتكم الهيئة الرقابية الساهرة على تطبيق قوانين الوظيفة العمومية ومبدأ المساواة في الالتحاق بالوظائف العمومية، بهذا الطعن قصد التدخل لمراجعة حساب نقاطي وترتيبي في النتائج النهائية للمسابقة المذكورة أعلاه.',
+                    attachments: '- نسخة من ملف الترشح والطعن المودع لدى الإدارة المعنية.\n- الوثائق الثبوتية للمؤهل والأقدمية.'
+                },
+                {
+                    id: 'exam_5',
+                    title: 'طلب مشاركة في مسابقة توظيف على أساس الاختبارات',
+                    subject: 'طلب خطي للمشاركة في مسابقة التوظيف على أساس الاختبارات',
+                    lawRef: 'المرسوم التنفيذي رقم 12-194 المؤرخ في 25 أفريل 2012، والمرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025.',
+                    lawNotice: 'محين وفق المرسوم التنفيذي 25-54 والمرسوم 12-194.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس تسجيل اسمي ضمن قائمة المترشحين للمشاركة في مسابقة التوظيف على أساس الاختبارات الكتابية للالتحاق بالرتبة المذكورة، علماً أنني أتوفر على الشهادة والمؤهلات المطلوبة قانوناً.',
+                    attachments: '- استمارة معلومات للمشاركة في المسابقة على أساس الاختبارات.\n- نسخة من الشهادة العلمية + بطاقة التعريف الوطنية.\n- وصل دفع حقوق التسجيل (إن وجد).'
+                },
+                {
+                    id: 'exam_6',
+                    title: 'طلب مشاركة في مسابقة توظيف عن طريق الفحص المهني',
+                    subject: 'طلب خطي للمشاركة في التوظيف عن طريق الفحص المهني',
+                    lawRef: 'المرسوم التنفيذي رقم 12-194 المؤرخ في 25 أفريل 2012، والمرسوم التنفيذي رقم 08-04 المعدل والمتمم المتضمن القانون الأساسي للأسلاك المشتركة والعمال المهنيين.',
+                    lawNotice: 'مطابق لتنظيم الفحوص المهنية للأعوان المهنيين والأسلاك المشتركة.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس قبول ملفي للمشاركة في الفحص المهني المفتوح من طرف مصالحكم، علماً أنني أحوز الكفاءة المهنية والشروط المطلوبة للمنصب.',
+                    attachments: '- استمارة المشاركة في الفحص المهني.\n- شهادة الكفاءة المهنية أو شهادة مدرسية + شهادة الخبرة.'
+                },
+                {
+                    id: 'exam_7',
+                    title: 'طعن في قرار رفض ملف المشاركة على أساس الاختبارات',
+                    subject: 'طعن إداري في رفض ملف الترشح لمسابقة على أساس الاختبارات',
+                    lawRef: 'المادة 15 من المرسوم التنفيذي رقم 12-194 المؤرخ في 25 أفريل 2012.',
+                    lawNotice: 'يودع قبل 5 أيام عمل على الأقل من تاريخ إجراء الاختبارات الكتابية طبقاً للمادة 15 من المرسوم 12-194.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطعني هذا قصد التماس إعادة النظر في قرار رفض ملف ترشحي لاجتياز مسابقة التوظيف على أساس الاختبارات، حيث أرفق لكم الوثيقة التبريرية اللازمة لتسوية الملف وتمكيني من استلام استدعاء الامتحان.',
+                    attachments: '- نسخة من وصل إيداع الملف.\n- الوثيقة التكميلية المطلوبة.'
+                },
+                {
+                    id: 'exam_8',
+                    title: 'المشاركة في التوظيف على أساس الانتقاء (دراسة الملفات)',
+                    subject: 'طلب خطي للمشاركة في مسابقة التوظيف على أساس الانتقاء بناءً على دراسة الملف',
+                    lawRef: 'المرسوم التنفيذي رقم 12-194 المؤرخ في 25 أفريل 2012، والنظام التعاقدي الساري المفعول في الوظيفة العمومية.',
+                    lawNotice: 'محين وفق إجراءات الانتقاء والترتيب الاستحقاقي للملفات.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطلبي هذا، قصد التماس قبول ترشحي للمشاركة في عملية التوظيف على أساس الانتقاء بناءً على دراسة الملفات، مع إرفاق كافة الوثائق المثبتة لمؤهلاتي وخبرتي المهنية.',
+                    attachments: '- استمارة معلومات للمشاركة.\n- نسخة من الشهادة وكشوف النقاط + بطاقة التعريف الوطنية.'
+                },
+                {
+                    id: 'exam_9',
+                    title: 'طعن في قرار رفض ملف المشاركة على أساس الانتقاء',
+                    subject: 'طعن إداري في قرار رفض ملف المشاركة في مسابقة الانتقاء',
+                    lawRef: 'المادة 15 من المرسوم التنفيذي رقم 12-194 المؤرخ في 25 أفريل 2012.',
+                    lawNotice: 'محين وفق الآجال التنظيمية للطعون في المسابقات على أساس الانتقاء.',
+                    body: 'يشرفني أن أتقدم إلى سيادتكم المحترمة بطعني هذا ضد قرار رفض ملفي في عملية التوظيف على أساس الانتقاء، ملتمساً من اللجنة المختصة إعادة فحص ملفي المرفق بالوثائق القانونية المستوفاة للشروط.',
+                    attachments: '- نسخة من وصل إيداع الملف.\n- الوثائق التبريرية المرفقة.'
+                }
+            ]
+        };
+
+        // تهيئة الصفحة عند التحميل
+        window.onload = function() {
+            // تعيين تاريخ اليوم افتراضياً
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('reqDate').value = today;
+
+            // تعبئة قائمة القوالب وتحديث المعاينة
+            populateTemplatesDropdown();
+        };
+
+        // دالة التنقل بين التبويبات الـ 4
+        function openTab(tabId, btnElem) {
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            if (btnElem) {
+                btnElem.classList.add('active');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // دالة الانتقال السريع من الدليل (التبويب 2) إلى المولد (التبويب 1) مع اختيار الطلب تلقائياً
+        function jumpToGenerator(categoryKey, templateId) {
+            const catSelect = document.getElementById('reqCategory');
+            catSelect.value = categoryKey;
+            populateTemplatesDropdown(templateId);
+
+            // تفعيل التبويب الأول
+            const firstTabBtn = document.querySelectorAll('.nav-tab-btn')[0];
+            openTab('tab-generator', firstTabBtn);
+            showToast('✅ تم تحميل نموذج الطلب المحين قانونياً في المحرر!');
+        }
+
+        // تعبئة القائمة المنسدلة للطلبات حسب القسم المختار
+        function populateTemplatesDropdown(selectedTemplateId = null) {
+            const catKey = document.getElementById('reqCategory').value;
+            const tplSelect = document.getElementById('reqTemplate');
+            tplSelect.innerHTML = '';
+
+            const list = REQUEST_TEMPLATES[catKey] || [];
+            list.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.id;
+                opt.textContent = item.title;
+                tplSelect.appendChild(opt);
+            });
+
+            if (selectedTemplateId) {
+                tplSelect.value = selectedTemplateId;
+            }
+            updateRequestPreview();
+        }
+
+        // إظهار حقل الرتبة اليدوية إذا اختار المستخدم "كتابة رتبة أخرى"
+        function handleRankChange() {
+            const sel = document.getElementById('empRankSelect').value;
+            const customInput = document.getElementById('empRankCustom');
+            customInput.style.display = (sel === 'custom') ? 'block' : 'none';
+            updateRequestPreview();
+        }
+
+        // توليد رقم توثيق مرجعي للوثيقة
+        function generateReferenceAuthCode(dateStr, tplId) {
+            const cleanDate = (dateStr || '2026').replace(/-/g, '');
+            return `SNTE-${cleanDate}-${tplId.toUpperCase()}`;
+        }
+
+        // تحديث معاينة ورقة الـ A4 الحية
+        function updateRequestPreview() {
+            const catKey = document.getElementById('reqCategory').value;
+            const tplId = document.getElementById('reqTemplate').value;
+            const list = REQUEST_TEMPLATES[catKey] || [];
+            const tpl = list.find(t => t.id === tplId) || list[0];
+            if (!tpl) return;
+
+            const name = document.getElementById('empName').value.trim() || '................................';
+            const phone = document.getElementById('empPhone').value.trim() || '................................';
+            const rankSel = document.getElementById('empRankSelect').value;
+            const rank = (rankSel === 'custom')
+                ? (document.getElementById('empRankCustom').value.trim() || '................')
+                : rankSel;
+            const workplace = document.getElementById('empWorkplace').value.trim() || '................................';
+            const wilaya = document.getElementById('empWilaya').value.trim() || '................';
+            const commune = document.getElementById('empCommune').value.trim() || '................';
+            const reqDate = document.getElementById('reqDate').value;
+            const recipientBase = document.getElementById('reqRecipient').value;
+            const extraDetail = document.getElementById('reqExtraDetail').value.trim();
+
+            const useHierarchy = document.getElementById('chkHierarchy').checked;
+            const useSnteHeader = document.getElementById('chkSnteHeader').checked;
+            const useWatermark = document.getElementById('chkWatermark').checked;
+
+            // تحديث تنبيه التحيين القانوني
+            document.getElementById('lawUpdateNoticeText').innerText = tpl.lawNotice;
+
+            // التحكم في ترويسة النقابة والعلامة المائية
+            document.getElementById('a4SnteHeader').style.display = useSnteHeader ? 'flex' : 'none';
+            document.getElementById('a4RepublicClassic').style.display = useSnteHeader ? 'none' : 'block';
+            document.getElementById('a4Watermark').style.display = useWatermark ? 'block' : 'none';
+            document.getElementById('a4QrFooter').style.display = useWatermark ? 'flex' : 'none';
+
+            // بناء مربع المرسل (أعلى اليمين)
+            document.getElementById('a4SenderBox').innerHTML = `
+                الاسم واللقب: <strong>${name}</strong><br>
+                الرتبة / الصفة: <strong>${rank}</strong><br>
+                المؤسسة / العنوان: <strong>${workplace} (${commune} - ${wilaya})</strong><br>
+                رقم الهاتف: <strong dir="ltr">${phone}</strong>
+            `;
+
+            // بناء مربع المرسل إليه (أعلى اليسار)
+            let recipientFull = recipientBase;
+            if (recipientBase.endsWith('لولاية')) {
+                recipientFull += ' ' + wilaya;
+            }
+            const hierarchyText = useHierarchy ? '<br><span style="font-size:14.5px; text-decoration:underline;">(عن طريق السلم الإداري)</span>' : '';
+
+            document.getElementById('a4RecipientBox').innerHTML = `
+                <div style="margin-bottom:10px;">${commune} في: <span dir="ltr">${reqDate}</span></div>
+                <div>إلى ${recipientFull}</div>
+                ${hierarchyText}
+            `;
+
+            // الموضوع والمرجع القانوني المحين
+            document.getElementById('a4SubjectLine').innerHTML = `الموضوع: ${tpl.subject}.`;
+            document.getElementById('a4RefLine').innerHTML = `<strong>المرجع القانوني المحين:</strong> ${tpl.lawRef}`;
+
+            // متن الطلب الخطي
+            let finalBody = tpl.body;
+            if (extraDetail) {
+                finalBody += `\n\nبيانات وتفاصيل إضافية متعلقة بالطلب: (${extraDetail}).`;
+            }
+            finalBody += `\n\nوفي انتظار ردكم الإيجابي، تقبلوا مني سيدي فائق عبارات التقدير والاحترام.`;
+
+            document.getElementById('a4BodyText').innerText = finalBody;
+
+            // المرفقات والإمضاء
+            document.getElementById('a4AttachmentsList').innerText = tpl.attachments;
+            document.getElementById('a4SignerName').innerText = name;
+
+            // التوثيق ورمز QR
+            const authCode = generateReferenceAuthCode(reqDate, tpl.id);
+            document.getElementById('a4AuthCode').innerText = authCode;
+            const qrPayload = `SNTE-ALGERIA\nالطلب: ${tpl.subject}\nالمعني: ${name}\nالتاريخ: ${reqDate}\nالكود: ${authCode}`;
+            document.getElementById('a4QrImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(qrPayload)}`;
+        }
+
+        // نسخ نص الطلب بالكامل إلى الحافظة
+        function copyLetterText() {
+            const sender = document.getElementById('a4SenderBox').innerText;
+            const recipient = document.getElementById('a4RecipientBox').innerText;
+            const subject = document.getElementById('a4SubjectLine').innerText;
+            const ref = document.getElementById('a4RefLine').innerText;
+            const body = document.getElementById('a4BodyText').innerText;
+            const attachments = document.getElementById('a4AttachmentsList').innerText;
+
+            const fullText = `الجمهورية الجزائرية الديمقراطية الشعبية\n\n${sender}\n\n${recipient}\n\n${subject}\n${ref}\n\n${body}\n\nالمرفقات:\n${attachments}\n\nإمضاء المعني(ة) بالأمر`;
+
+            const tempArea = document.createElement('textarea');
+            tempArea.value = fullText;
+            document.body.appendChild(tempArea);
+            tempArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempArea);
+
+            showToast('📋 تم نسخ نص الطلب الخطي المحين بالكامل إلى الحافظة!');
+        }
+
+        // مشاركة الطلب عبر واتساب
+        function shareLetterWhatsapp() {
+            const subject = document.getElementById('a4SubjectLine').innerText;
+            const ref = document.getElementById('a4RefLine').innerText;
+            const body = document.getElementById('a4BodyText').innerText;
+            const name = document.getElementById('empName').value.trim();
+
+            const msg = `*النقابة الوطنية لعمال التربية SNTE*\n*بوابة الطلبات الخطية المحينة قانونياً*\n\n📌 *${subject}*\n⚖️ ${ref}\n\n${body}\n\n✍️ *المعني(ة):* ${name}`;
+            const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+            window.open(url, '_blank');
+        }
+
+        // إعادة ضبط النموذج والمعاينة إلى الإعدادات الافتراضية
+        function resetFormAndPreview() {
+            document.getElementById('empName').value = 'أحمد بن محمود';
+            document.getElementById('empPhone').value = '0660123456';
+            document.getElementById('empRankSelect').value = 'أستاذ التعليم الابتدائي';
+            document.getElementById('empRankCustom').style.display = 'none';
+            document.getElementById('empWorkplace').value = 'ثانوية النعيم النعيمي';
+            document.getElementById('empWilaya').value = 'الجلفة';
+            document.getElementById('empCommune').value = 'الجلفة';
+            document.getElementById('reqDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('reqExtraDetail').value = '';
+            updateRequestPreview();
+            showToast('🔄 تمت إعادة ضبط النموذج وتحديث ورقة الطلب A4 بنجاح.');
+        }
+
+        // ================= خوارزمية البحث الذكية في الدليل (التبويب 2) =================
+        document.getElementById('searchInput').addEventListener('input', function() {
+            let filter = this.value.trim().toLowerCase();
+            let mainContent = document.getElementById('mainContent');
+            let searchResults = document.getElementById('searchResults');
+            let resultsList = document.getElementById('resultsList');
+
+            resultsList.innerHTML = '';
+
+            if (filter === '') {
+                searchResults.style.display = 'none';
+                mainContent.style.display = 'block';
+                return;
+            }
+
+            searchResults.style.display = 'block';
+            mainContent.style.display = 'none';
+
+            let allItems = mainContent.querySelectorAll('.file-item');
+            let matchCount = 0;
+
+            allItems.forEach(item => {
+                let textSpan = item.querySelector('.item-text');
+                let originalText = textSpan.textContent;
+                let lowerText = originalText.toLowerCase();
+
+                if (lowerText.includes(filter)) {
+                    let clonedItem = item.cloneNode(true);
+                    let escapedFilter = filter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    let regex = new RegExp(`(${escapedFilter})`, 'gi');
+                    clonedItem.querySelector('.item-text').innerHTML = originalText.replace(regex, '<mark>$1</mark>');
+                    resultsList.appendChild(clonedItem);
+                    matchCount++;
+                }
+            });
+
+            if (matchCount === 0) {
+                let noResultLi = document.createElement('li');
+                noResultLi.style.justifyContent = 'center';
+                noResultLi.style.color = 'var(--snte-red)';
+                noResultLi.style.fontWeight = 'bold';
+                noResultLi.innerText = 'عذراً، لم يتم العثور على أي طلب يطابق كلمة البحث.';
+                resultsList.appendChild(noResultLi);
+            }
+        });
+
+        // ================= دوال استخراج النص OCR وتحيين القوانين القديمة (التبويب 4) =================
+        function startOCR() {
+            const fileInput = document.getElementById('imageInput');
+            const statusText = document.getElementById('ocrStatus');
+            const resultBox = document.getElementById('ocrResult');
+
+            if (fileInput.files.length === 0) {
+                statusText.innerText = '⚠️ يرجى اختيار ملف صورة للطلب أولاً.';
+                statusText.style.color = 'var(--snte-red)';
+                return;
+            }
+
+            const imageFile = fileInput.files[0];
+            statusText.innerText = '⏳ جاري تحليل الصورة واستخراج النص العربي... يرجى الانتظار.';
+            statusText.style.color = 'var(--snte-green-dark)';
+            resultBox.value = '';
+
+            Tesseract.recognize(imageFile, 'ara')
+                .then(({ data: { text } }) => {
+                    resultBox.value = text;
+                    statusText.innerText = '✅ تم استخراج النص بنجاح! يمكنك الآن الضغط على زر (تحيين القوانين القديمة في النص تلقائياً).';
+                })
+                .catch(err => {
+                    console.error(err);
+                    statusText.innerText = '❌ حدث خطأ أثناء قراءة الصورة. يرجى التأكد من وضوح الصورة.';
+                    statusText.style.color = 'var(--snte-red)';
+                });
+        }
+
+        // دالة ذكية لفحص أي نص قديم واستبدال القوانين الملغاة بالقوانين الجديدة (2025-2026)
+        function autoUpdateLawsInOcrText() {
+            const box = document.getElementById('ocrResult');
+            let text = box.value;
+
+            if (!text.trim()) {
+                showToast('⚠️ يرجى استخراج نص أو لصق مراسلة في المربع أولاً قبل التحيين.');
+                return;
+            }
+
+            // استبدال القوانين القديمة بالنصوص المحينة
+            let updatedText = text
+                .replace(/08\s*[-/]\s*315/g, '25-54 المؤرخ في 23 جانفي 2025')
+                .replace(/315\s*[-/]\s*08/g, '25-54 المؤرخ في 23 جانفي 2025')
+                .replace(/12\s*[-/]\s*240/g, '25-54 المؤرخ في 23 جانفي 2025')
+                .replace(/240\s*[-/]\s*12/g, '25-54 المؤرخ في 23 جانفي 2025')
+                .replace(/90\s*[-/]\s*14/g, '23-02 المؤرخ في 25 أفريل 2023 المتعلق بممارسة الحق النقابي')
+                .replace(/14\s*[-/]\s*90/g, '23-02 المؤرخ في 25 أفريل 2023 المتعلق بممارسة الحق النقابي')
+                .replace(/98\s*يوم(ا|اً)?/g, '150 يوماً متتالياً (وفق القانون رقم 25-08 المؤرخ في 19 يوليو 2025)')
+                .replace(/ثمانية وتسعين يوما/g, 'مائة وخمسين (150) يوماً متتالياً وفق القانون رقم 25-08');
+
+            if (updatedText === text) {
+                updatedText += '\n\n[المرجع القانوني المحين المضاف آلياً: بمقتضى الأمر 06-03 المتمم بالقانون 22-22، والمرسوم التنفيذي رقم 25-54 المؤرخ في 23 جانفي 2025 المتضمن القانون الأساسي الخاص بالموظفين المنتمين للأسلاك الخاصة بالتربية الوطنية، والقانون رقم 23-02 المؤرخ في 25 أفريل 2023].';
+            }
+
+            box.value = updatedText;
+            showToast('⚖️ تم تحيين المراجع القانونية في النص بنجاح وفق تشريعات 2025-2026!');
+        }
+
+        // إرسال النص المحين من أداة OCR مباشرة إلى ورقة الطلب الرسمية A4
+        function sendOcrToGenerator() {
+            const text = document.getElementById('ocrResult').value.trim();
+            if (!text) {
+                showToast('⚠️ لا يوجد نص لتحويله إلى ورقة الطلب!');
+                return;
+            }
+            const firstTabBtn = document.querySelectorAll('.nav-tab-btn')[0];
+            openTab('tab-generator', firstTabBtn);
+            document.getElementById('a4BodyText').innerText = text;
+            showToast('📄 تم إدراج النص المستخرج والمحين في ورقة الـ A4 الجاهزة للطباعة!');
+        }
+
+        function copyOcrText() {
+            const resultBox = document.getElementById('ocrResult');
+            if (!resultBox.value.trim()) {
+                showToast('⚠️ لا يوجد نص لنسخه!');
+                return;
+            }
+            resultBox.select();
+            document.execCommand('copy');
+            showToast('📋 تم نسخ النص بنجاح!');
+        }
+
+        // إشعارات النظام
+        function showToast(message) {
+            const toast = document.getElementById('toastBox');
+            toast.innerText = message;
+            toast.style.display = 'block';
+            clearTimeout(window.toastTimer);
+            window.toastTimer = setTimeout(() => {
+                toast.style.display = 'none';
+            }, 4200);
+        }
+    </script>
 </body>
 </html>
